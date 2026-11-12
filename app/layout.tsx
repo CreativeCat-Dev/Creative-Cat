@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { cn } from "@/lib/utils";
 import "./globals.css";
 import { clashDisplay, montserrat } from "./fonts";
+import { PageShell } from "@/components/layout/page-shell";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 
 export const metadata: Metadata = {
@@ -27,7 +28,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <PageShell>{children}</PageShell>
         </ThemeProvider>
       </body>
     </html>
