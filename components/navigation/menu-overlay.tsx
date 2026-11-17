@@ -18,6 +18,21 @@ type MenuOverlayProps = {
   onClosed: () => void;
 };
 
+/**
+ * Row type is shared by the real label and the decorative flow track so the two
+ * can never drift apart.
+ */
+const rowType = "font-heading leading-none text-[clamp(2.5rem,min(7vw,9svh),6.5rem)]";
+
+/**
+ * The flow track is two identical halves of four copies. Identical halves make
+ * `xPercent: -50` land on the same pattern, and `min-w-[100vw]` keeps each half
+ * at least as wide as the coral band on any viewport — so the loop has no gap at
+ * the trailing edge without measuring anything at runtime.
+ */
+const MARQUEE_HALVES = [0, 1];
+const MARQUEE_COPIES = [0, 1, 2, 3];
+
 
 export function MenuOverlay({ open, onClose, onNavigate, onClosed }: MenuOverlayProps) {
   const panelRef = useRef<HTMLDivElement>(null);
@@ -27,6 +42,11 @@ export function MenuOverlay({ open, onClose, onNavigate, onClosed }: MenuOverlay
   const callbacks = useRef({ onClose, onClosed });
   const returnFocusRef = useRef<HTMLElement | null>(null);
   const pathname = usePathname();
+  /**
+   * Set by the fine-pointer motion branch. Closing the overlay calls it so a
+   * reopened menu never inherits a frozen phase from the previous hover.
+   */
+  const resetMarquees = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     openRef.current = open;
@@ -48,6 +68,9 @@ export function MenuOverlay({ open, onClose, onNavigate, onClosed }: MenuOverlay
 
       const onCompleteState = () => {
         gsap.set(panel, { autoAlpha: 0 });
+        // Rewind while the panel is invisible: doing it any earlier would be seen
+        // against the still-retracting coral band.
+        resetMarquees.current?.();
         callbacks.current.onClosed();
       };
 
@@ -63,10 +86,12 @@ export function MenuOverlay({ open, onClose, onNavigate, onClosed }: MenuOverlay
             { yPercent: 0, duration: 0.72, ease: "power4.out" },
             0
           )
+          // opacity (not autoAlpha) so the entrance targets stay focusable from
+          // the first frame; visibility: hidden would swallow the initial focus.
           .fromTo(
             head,
-            { autoAlpha: 0, y: -16 },
-            { autoAlpha: 1, y: 0, duration: 0.45, ease: "power2.out" },
+            { opacity: 0, y: -16 },
+            { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" },
             0.16
           )
           .fromTo(
@@ -77,8 +102,8 @@ export function MenuOverlay({ open, onClose, onNavigate, onClosed }: MenuOverlay
           )
           .fromTo(
             foot,
-            { autoAlpha: 0, y: 12 },
-            { autoAlpha: 1, y: 0, duration: 0.4, ease: "power2.out" },
+            { opacity: 0, y: 12 },
+            { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" },
             0.5
           );
 
@@ -96,10 +121,12 @@ export function MenuOverlay({ open, onClose, onNavigate, onClosed }: MenuOverlay
       mm.add("(prefers-reduced-motion: reduce)", () => {
         const tl = gsap.timeline({ paused: true, onReverseComplete: onCompleteState });
 
-        tl.fromTo(
+        // Visibility is state, not motion: assert it at t=0 so the fade below is
+        // opacity-only and the entrance stays focusable on its first frame.
+        tl.set(panel, { autoAlpha: 1 }).fromTo(
           panel,
-          { autoAlpha: 0 },
-          { autoAlpha: 1, duration: 0.18, ease: "none" },
+          { opacity: 0 },
+          { opacity: 1, duration: 0.18, ease: "none" },
           0
         );
 
@@ -112,6 +139,76 @@ export function MenuOverlay({ open, onClose, onNavigate, onClosed }: MenuOverlay
         };
       });
 
+      /**
+       * Coral flow track. Motion only: the band's wipe and the static label's
+       * fade are CSS, so without JavaScript the row still looks finished instead
+       * of showing a coral bar across every line.
+       *
+       * The reduced-motion state needs no branch here: the CSS transitions drop
+       * out, the band appears at its end state, and the track simply never moves.
+       */
+      mm.add(
+        "(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)",
+        () => {
+          const rows = Array.from(panel.querySelectorAll<HTMLElement>("[data-menu-row]"));
+          const tweens: gsap.core.Tween[] = [];
+          const cleanups: Array<() => void> = [];
+
+          for (const row of rows) {
+            const track = row.querySelector<HTMLElement>("[data-menu-marquee]");
+            if (!track) continue;
+
+            // Built once per row and never rebuilt: hovering only plays or pauses.
+            const tween = gsap.to(track, {
+              xPercent: -50,
+              duration: 16,
+              ease: "none",
+              repeat: -1,
+              paused: true,
+            });
+            tweens.push(tween);
+
+            let rewind: gsap.core.Tween | null = null;
+
+            const onEnter = () => {
+              // A pending rewind would snap the track to 0 mid-wipe.
+              rewind?.kill();
+              rewind = null;
+              tween.play();
+            };
+
+            const onLeave = () => {
+              tween.pause();
+              // The band takes 450ms to retract; rewinding inside that window
+              // would be visible, so the reset waits it out.
+              rewind = gsap.delayedCall(0.5, () => {
+                tween.pause(0);
+                rewind = null;
+              });
+            };
+
+            row.addEventListener("pointerenter", onEnter);
+            row.addEventListener("pointerleave", onLeave);
+
+            cleanups.push(() => {
+              row.removeEventListener("pointerenter", onEnter);
+              row.removeEventListener("pointerleave", onLeave);
+              rewind?.kill();
+            });
+          }
+
+          resetMarquees.current = () => {
+            for (const tween of tweens) tween.pause(0);
+          };
+
+          return () => {
+            cleanups.forEach((cleanup) => cleanup());
+            resetMarquees.current = null;
+            for (const tween of tweens) tween.kill();
+          };
+        }
+      );
+
       return () => mm.revert();
     },
     { scope: panelRef }
@@ -119,9 +216,18 @@ export function MenuOverlay({ open, onClose, onNavigate, onClosed }: MenuOverlay
 
   useEffect(() => {
     const tl = timeline.current;
-    if (!tl) return;
-    if (open) tl.play();
-    else if (tl.progress() > 0) tl.reverse();
+    const panel = panelRef.current;
+    if (!tl || !panel) return;
+
+    if (open) {
+      // A paused timeline applies its t=0 `.set()` on the next GSAP tick, so the
+      // panel would still be `visibility: hidden` when the focus effect below
+      // runs. Assert visibility synchronously, then animate.
+      gsap.set(panel, { autoAlpha: 1 });
+      tl.play();
+    } else if (tl.progress() > 0) {
+      tl.reverse();
+    }
   }, [open]);
 
   // Scroll lock, owned by the open state so it can never be left behind.
@@ -130,13 +236,14 @@ export function MenuOverlay({ open, onClose, onNavigate, onClosed }: MenuOverlay
     return lockScroll();
   }, [open]);
 
-  // Move focus into the panel on open, restore it on close.
+  // Move focus into the panel on open, restore it on close. The panel is made
+  // visible synchronously by the play effect above, so Close can take focus in
+  // the same commit. A delayed focus raced the entrance and silently no-op'd.
   useEffect(() => {
     if (!open) return;
     returnFocusRef.current = document.activeElement as HTMLElement | null;
-    const id = window.setTimeout(() => closeRef.current?.focus(), 60);
+    closeRef.current?.focus();
     return () => {
-      window.clearTimeout(id);
       returnFocusRef.current?.focus();
       returnFocusRef.current = null;
     };
@@ -169,7 +276,11 @@ export function MenuOverlay({ open, onClose, onNavigate, onClosed }: MenuOverlay
     const last = focusable[focusable.length - 1];
     const active = document.activeElement;
 
-    if (event.shiftKey && (active === first || !panel.contains(active))) {
+    if (!panel.contains(active)) {
+      // Focus escaped somehow: pull it back, direction-agnostic.
+      event.preventDefault();
+      (event.shiftKey ? last : first).focus();
+    } else if (event.shiftKey && active === first) {
       event.preventDefault();
       last.focus();
     } else if (!event.shiftKey && active === last) {
@@ -240,20 +351,65 @@ export function MenuOverlay({ open, onClose, onNavigate, onClosed }: MenuOverlay
                   href={item.href}
                   onClick={(event) => handleNavigate(event, item.href)}
                   aria-current={active ? "page" : undefined}
-                  className="group flex items-baseline gap-4 py-3 outline-none md:gap-8 md:py-4 focus-visible:ring-3 focus-visible:ring-ring/50"
+                  data-menu-row
+                  className="group relative isolate flex items-baseline gap-4 py-3 outline-none md:gap-8 md:py-4 focus-visible:ring-3 focus-visible:ring-ring/50"
                 >
+                  {/*
+                    Coral band, clipped to the row and starting at the label column so
+                    the flowing words never cross the "01" index. `isolate` on the link
+                    is what keeps `-z-10` local: without it the band would paint behind
+                    the overlay's own background instead of behind the label.
+
+                    The fill and the label fade are CSS because they must be invisible
+                    without JavaScript; a bar of coral on every row is what a
+                    JS-revealed band would leave behind if hydration ever failed.
+                  */}
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute inset-y-0 right-0 left-12 -z-10 select-none overflow-hidden md:left-16"
+                  >
+                    <span className="absolute inset-0 origin-left scale-x-0 bg-primary motion-safe:transition-transform motion-safe:duration-[450ms] motion-safe:ease-[cubic-bezier(0.22,1,0.36,1)] pointer-fine:group-hover:scale-x-100" />
+
+                    {/*
+                      Midnight text on the midnight panel: the track is invisible until
+                      the coral slides under it, so no opacity juggling is needed. GSAP
+                      owns only its horizontal position.
+
+                      `relative z-10` is a paint-order fix, not decoration. The fill is
+                      absolutely positioned, so without a stacking rule it paints above
+                      this static flex child — invisible only because GSAP's transform
+                      happens to promote the track. Under reduced motion no tween exists,
+                      so the band would read as an empty coral bar.
+                    */}
+                    <span
+                      data-menu-marquee
+                      className={`relative z-10 flex h-full w-max items-center whitespace-nowrap text-primary-foreground ${rowType}`}
+                    >
+                      {MARQUEE_HALVES.map((half) => (
+                        <span
+                          key={half}
+                          className="flex w-max min-w-[100vw] shrink-0 items-center justify-between gap-[0.45em] px-[0.22em]"
+                        >
+                          {MARQUEE_COPIES.map((copy) => (
+                            <span key={copy}>{item.label}</span>
+                          ))}
+                        </span>
+                      ))}
+                    </span>
+                  </span>
+
                   <span className={`w-8 text-muted-foreground ${microLabel}`}>{item.index}</span>
                   <span className="overflow-hidden pb-[0.06em]">
                     <span
                       data-menu-row-inner
-                      className="block font-heading leading-none text-[clamp(2.5rem,min(7vw,9svh),6.5rem)] transition-colors group-hover:text-primary"
+                      className={`block ${rowType} motion-safe:transition-opacity motion-safe:duration-200 pointer-fine:group-hover:opacity-0`}
                     >
                       {item.label}
                     </span>
                   </span>
                   <span
                     aria-hidden
-                    className={`ml-auto size-1.5 rounded-full transition-colors ${
+                    className={`ml-auto size-1.5 rounded-full motion-safe:transition-opacity motion-safe:duration-200 pointer-fine:group-hover:opacity-0 ${
                       active ? "bg-primary" : "bg-transparent"
                     }`}
                   />
@@ -278,7 +434,7 @@ export function MenuOverlay({ open, onClose, onNavigate, onClosed }: MenuOverlay
             <span className={`hidden text-muted-foreground md:block ${microLabel}`}>
               Independent Creative Studio
             </span>
-            <ThemeToggle />
+            <ThemeToggle animated={false} />
           </div>
         </div>
       </div>

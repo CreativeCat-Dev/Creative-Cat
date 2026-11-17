@@ -138,4 +138,28 @@
   html {
     @apply font-sans;
     }
+  ::selection {
+    background: var(--primary);
+    color: var(--primary-foreground);
+    }
+  ::-moz-selection {
+    background: var(--primary);
+    color: var(--primary-foreground);
+    }
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+html[data-theme-transition="active"]::view-transition-new(root) {
+  clip-path: var(--theme-transition-clip-from);
+}
+
+html[data-theme-transition="active"] *,
+html[data-theme-transition="active"] *::before,
+html[data-theme-transition="active"] *::after {
+  transition: none !important;
 }
