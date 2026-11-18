@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Rive version="1" kind="fragment">
+    <!--
+      Creative Cat — master character (Cat 2A.1, reference-vector migration).
+
+      Geometry is copied verbatim from rive/references/scene.rml, the traced
+      vector source, and transformed with ONE global mapping:
+
+        CAT_SOURCE_BOUNDS  x 10..170, y 2..203   (160 x 201, scene units)
+        MASTER_SCALE       2.3
+        MASTER_OFFSET      49, 20.25
+
+      That mapping is locked and must be reused for every later Cat 2 phase
+      (eyes, muzzle, whiskers, body, paws, tail). No per-part scaling.
+
+      The source draws ears before the head, so the ears sit on top of the head
+      fill; the sibling order below preserves that, which is what keeps the
+      ear/head junction seamless under a fill-on-fill construction.
+
+      Static artwork only: no state machine, no view model, no animation.
+      Imported: head fill + 4 left-ear shapes + 4 right-ear shapes + 9 head
+      surface shapes (crown, two shades, two cheek lights, four fur marks).
+      Absent by design: whiskers, body, paws, tail, ball.
+
+      Paint order: surface details first (top), then the head fill, then the
+      ears. In the source file the details come after the head, i.e. they are
+      painted above it; RML inverts sibling order, so they are declared first.
+    -->
+    <Artboard name="CreativeCatMaster" id="0:2" styleId="0:5" width="512" height="512">
+        <LayoutComponentStyle name="Artboard Style" id="0:5" />
+
+        <Node name="Cat Character" id="0:10">
+            <Node name="Head Group" id="0:11">
+                <Node name="Face Details" id="0:100">
+                    <Shape name="Nose" id="0:101">
+                        <PointsPath name="nose" isClosed="true">
+                            <CubicDetachedVertex x="230.7" y="231.85" inRotation="1.249046" inDistance="7.27" outRotation="-0.588003" outDistance="8.29"/>
+                            <CubicDetachedVertex x="256" y="234.15" inRotation="-2.356194" inDistance="9.76" outRotation="2.034444" outDistance="10.29"/>
+                            <CubicDetachedVertex x="242.2" y="245.65" inRotation="0" inDistance="2.3" outRotation="-2.677945" outDistance="5.14"/>
+                        </PointsPath>
+                        <Fill name="nose fill">
+                            <SolidColor name="Color" colorValue="FF271436"/>
+                        </Fill>
+                    </Shape>
+                    <Shape name="Mouth Stem" id="0:102">
+                        <PointsPath name="mouth_stem" isClosed="true">
+                            <CubicDetachedVertex x="242.2" y="243.35" inRotation="2.356194" inDistance="6.51" outRotation="0.982794" outDistance="8.29"/>
+                            <CubicDetachedVertex x="242.2" y="257.15" inRotation="-0.785398" inDistance="3.25" outRotation="-2.356194" outDistance="6.51"/>
+                        </PointsPath>
+                        <Fill name="mouth_stem fill">
+                            <SolidColor name="Color" colorValue="99291535"/>
+                        </Fill>
+                    </Shape>
+                    <Shape name="Smile Left" id="0:103">
+                        <PointsPath name="smile_left" isClosed="true">
+                            <CubicDetachedVertex x="242.2" y="254.85" inRotation="2.356194" inDistance="9.76" outRotation="2.245537" outDistance="14.73"/>
+                            <CubicDetachedVertex x="221.5" y="259.45" inRotation="0.785398" inDistance="6.51" outRotation="0.321751" outDistance="7.27"/>
+                        </PointsPath>
+                        <Fill name="smile_left fill">
+                            <SolidColor name="Color" colorValue="99291535"/>
+                        </Fill>
+                    </Shape>
+                    <Shape name="Smile Right" id="0:104">
+                        <PointsPath name="smile_right" isClosed="true">
+                            <CubicDetachedVertex x="242.2" y="254.85" inRotation="0.982794" inDistance="16.59" outRotation="0.643501" outDistance="11.5"/>
+                            <CubicDetachedVertex x="262.9" y="254.85" inRotation="2.356194" inDistance="9.76" outRotation="1.768192" outDistance="11.73"/>
+                        </PointsPath>
+                        <Fill name="smile_right fill">
+                            <SolidColor name="Color" colorValue="99291535"/>
+                        </Fill>
+                    </Shape>
+                    <Shape name="Left Muzzle Dot 1" id="0:105">
+                        <PointsPath name="left_muzzle_dot_1" isClosed="true">
+                            <CubicDetachedVertex x="200.8" y="234.15" inRotation="1.570796" inDistance="4.6" outRotation="-0.785398" outDistance="3.25"/>
+                            <CubicDetachedVertex x="205.4" y="236.45" inRotation="-1.570796" inDistance="2.3" outRotation="2.356194" outDistance="3.25"/>
+                        </PointsPath>
+                        <Fill name="left_muzzle_dot_1 fill">
+                            <SolidColor name="Color" colorValue="736B587F"/>
+                        </Fill>
+                    </Shape>
+                    <Shape name="Left Muzzle Dot 2" id="0:106">
+                        <PointsPath name="left_muzzle_dot_2" isClosed="true">
+                            <CubicDetachedVertex x="210" y="243.35" inRotation="1.570796" inDistance="4.6" outRotation="-0.785398" outDistance="3.25"/>
+                            <CubicDetachedVertex x="214.6" y="245.65" inRotation="-1.570796" inDistance="2.3" outRotation="2.356194" outDistance="3.25"/>
+                        </PointsPath>
+                        <Fill name="left_muzzle_dot_2 fill">
+                            <SolidColor name="Color" colorValue="736B587F"/>
+                        </Fill>
+                    </Shape>
+                    <Shape name="Right Muzzle Dot 1" id="0:107">
+                        <PointsPath name="right_muzzle_dot_1" isClosed="true">
+                            <CubicDetachedVertex x="276.7" y="231.85" inRotation="1.570796" inDistance="4.6" outRotation="-0.785398" outDistance="3.25"/>
+                            <CubicDetachedVertex x="281.3" y="234.15" inRotation="-1.570796" inDistance="2.3" outRotation="2.356194" outDistance="3.25"/>
+                        </PointsPath>
+                        <Fill name="right_muzzle_dot_1 fill">
+                            <SolidColor name="Color" colorValue="736B587F"/>
+                        </Fill>
+                    </Shape>
+                    <Shape name="Muzzle Right" id="0:108">
+                        <PointsPath name="muzzle_right" isClosed="true">
+                            <CubicDetachedVertex x="244.5" y="238.75" inRotation="1.012197" inDistance="21.7" outRotation="-0.661043" outDistance="26.22"/>
+                            <CubicDetachedVertex x="297.4" y="243.35" inRotation="-2.034444" inDistance="15.43" outRotation="2.279423" outDistance="21.2"/>
+                        </PointsPath>
+                        <Fill name="muzzle_right fill">
+                            <SolidColor name="Color" colorValue="FFFBFAFF"/>
+                        </Fill>
+                    </Shape>
+                    <Shape name="Muzzle Left" id="0:109">
+                        <PointsPath name="muzzle_left" isClosed="true">
+                            <CubicDetachedVertex x="189.3" y="234.15" inRotation="1.19029" inDistance="24.77" outRotation="-0.661043" outDistance="26.22"/>
+                            <CubicDetachedVertex x="242.2" y="243.35" inRotation="-2.089942" inDistance="18.54" outRotation="2.422763" outDistance="24.45"/>
+                        </PointsPath>
+                        <Fill name="muzzle_left fill">
+                            <SolidColor name="Color" colorValue="FFFBFAFF"/>
+                        </Fill>
+                    </Shape>
+                </Node>
+
+                <Node name="Left Eye" id="0:80">
+                    <Shape name="Left Brow" id="0:81">
+                        <PointsPath name="left_brow" isClosed="true">
+                            <CubicDetachedVertex x="159.4" y="197.35" inRotation="0" inDistance="0" outRotation="-0.785398" outDistance="19.52"/>
+                            <CubicDetachedVertex x="212.3" y="197.35" inRotation="-2.265535" inDistance="17.96" outRotation="-2.55359" outDistance="16.59"/>
+                            <CubicDetachedVertex x="159.4" y="204.25" inRotation="-0.708626" inDistance="21.2" outRotation="0" outDistance="0"/>
+                        </PointsPath>
+                        <Fill name="left_brow fill">
+                            <SolidColor name="Color" colorValue="BF352344"/>
+                        </Fill>
+                    </Shape>
+                    <Shape name="Left Eye Glint Small" id="0:82">
+                        <PointsPath name="left_eye_glint_small" isClosed="true">
+                            <CubicDetachedVertex x="205.4" y="224.95" inRotation="0.785398" inDistance="6.51" outRotation="-2.356194" outDistance="6.51"/>
+                            <CubicDetachedVertex x="198.5" y="231.85" inRotation="-2.034444" inDistance="5.14" outRotation="0.785398" outDistance="6.51"/>
+                        </PointsPath>
+                        <Fill name="left_eye_glint_small fill">
+                            <SolidColor name="Color" colorValue="FFFFFFFF"/>
+                        </Fill>
+                    </Shape>
+                    <Shape name="Left Eye Glint Large" id="0:83">
+                        <PointsPath name="left_eye_glint_large" isClosed="true">
+                            <CubicDetachedVertex x="184.7" y="199.65" inRotation="0" inDistance="0" outRotation="2.761086" outDistance="12.39"/>
+                            <CubicDetachedVertex x="180.1" y="222.65" inRotation="-2.819842" inDistance="7.27" outRotation="0.197396" outDistance="11.73"/>
+                            <CubicDetachedVertex x="189.3" y="201.95" inRotation="0.643501" inDistance="11.5" outRotation="0" outDistance="0"/>
+                        </PointsPath>
+                        <Fill name="left_eye_glint_large fill">
+                            <SolidColor name="Color" colorValue="FFFFFFFF"/>
+                        </Fill>
+                    </Shape>
+                    <Shape name="Left Eye Iris" id="0:84">
+                        <PointsPath name="left_eye_iris" isClosed="true">
+                            <CubicDetachedVertex x="210" y="206.55" inRotation="1.107149" inDistance="20.57" outRotation="-2.265535" outDistance="17.96"/>
+                            <CubicDetachedVertex x="170.9" y="206.55" inRotation="-0.982794" inDistance="16.59" outRotation="2.191046" outDistance="19.79"/>
+                            <CubicDetachedVertex x="184.7" y="243.35" inRotation="-2.999696" inDistance="16.26" outRotation="0.110657" outDistance="20.83"/>
+                        </PointsPath>
+                        <Fill name="left_eye_iris fill">
+                            <SolidColor name="Color" colorValue="FF170E30"/>
+                        </Fill>
+                    </Shape>
+                    <Shape name="Left Eye Border" id="0:85">
+                        <PointsPath name="left_eye_border" isClosed="true">
+                            <CubicDetachedVertex x="214.6" y="204.25" inRotation="1.063698" inDistance="23.68" outRotation="-2.089942" outDistance="18.54"/>
+                            <CubicDetachedVertex x="166.3" y="204.25" inRotation="-1.012197" inDistance="21.7" outRotation="2.111216" outDistance="26.82"/>
+                            <CubicDetachedVertex x="187" y="250.25" inRotation="-3.017238" inDistance="18.54" outRotation="0.099669" outDistance="23.11"/>
+                        </PointsPath>
+                        <Fill name="left_eye_border fill">
+                            <SolidColor name="Color" colorValue="FF2B1C45"/>
+                        </Fill>
+                    </Shape>
+                </Node>
+
+                <Node name="Right Eye" id="0:90">
+                    <Shape name="Right Brow" id="0:91">
+                        <PointsPath name="right_brow" isClosed="true">
+                            <CubicDetachedVertex x="262.9" y="153.65" inRotation="0" inDistance="0" outRotation="-0.927295" outDistance="23"/>
+                            <CubicDetachedVertex x="313.5" y="158.25" inRotation="-2.214297" inDistance="23" outRotation="-2.55359" outDistance="24.88"/>
+                            <CubicDetachedVertex x="262.9" y="162.85" inRotation="-0.785398" inDistance="22.77" outRotation="0" outDistance="0"/>
+                        </PointsPath>
+                        <Fill name="right_brow fill">
+                            <SolidColor name="Color" colorValue="BF392348"/>
+                        </Fill>
+                    </Shape>
+                    <Shape name="Right Eye Glint Small" id="0:92">
+                        <PointsPath name="right_eye_glint_small" isClosed="true">
+                            <CubicDetachedVertex x="299.7" y="188.15" inRotation="0.785398" inDistance="6.51" outRotation="-2.356194" outDistance="6.51"/>
+                            <CubicDetachedVertex x="292.8" y="195.05" inRotation="-2.034444" inDistance="5.14" outRotation="0.785398" outDistance="6.51"/>
+                        </PointsPath>
+                        <Fill name="right_eye_glint_small fill">
+                            <SolidColor name="Color" colorValue="FFFFFFFF"/>
+                        </Fill>
+                    </Shape>
+                    <Shape name="Right Eye Glint Large" id="0:93">
+                        <PointsPath name="right_eye_glint_large" isClosed="true">
+                            <CubicDetachedVertex x="281.3" y="158.25" inRotation="0" inDistance="4.6" outRotation="3.141593" outDistance="9.2"/>
+                            <CubicDetachedVertex x="272.1" y="176.65" inRotation="-2.158799" inDistance="8.29" outRotation="0.982794" outDistance="8.29"/>
+                            <CubicDetachedVertex x="290.5" y="167.45" inRotation="1.570796" inDistance="6.9" outRotation="-1.570796" outDistance="6.9"/>
+                        </PointsPath>
+                        <Fill name="right_eye_glint_large fill">
+                            <SolidColor name="Color" colorValue="FFFFFFFF"/>
+                        </Fill>
+                    </Shape>
+                    <Shape name="Right Eye Iris" id="0:94">
+                        <PointsPath name="right_eye_iris" isClosed="true">
+                            <CubicDetachedVertex x="306.6" y="165.15" inRotation="1.107149" inDistance="20.57" outRotation="-2.191046" outDistance="19.79"/>
+                            <CubicDetachedVertex x="269.8" y="162.85" inRotation="-1.030377" inDistance="13.41" outRotation="2.191046" outDistance="19.79"/>
+                            <CubicDetachedVertex x="283.6" y="204.25" inRotation="-2.863293" inDistance="16.74" outRotation="0.218669" outDistance="21.2"/>
+                        </PointsPath>
+                        <Fill name="right_eye_iris fill">
+                            <SolidColor name="Color" colorValue="FF150B2C"/>
+                        </Fill>
+                    </Shape>
+                    <Shape name="Right Eye Border" id="0:95">
+                        <PointsPath name="right_eye_border" isClosed="true">
+                            <CubicDetachedVertex x="311.2" y="165.15" inRotation="1.063698" inDistance="23.68" outRotation="-2.077895" outDistance="23.68"/>
+                            <CubicDetachedVertex x="265.2" y="158.25" inRotation="-0.876058" inDistance="17.96" outRotation="2.289626" outDistance="24.45"/>
+                            <CubicDetachedVertex x="281.3" y="211.15" inRotation="-2.782822" inDistance="19.65" outRotation="0.179853" outDistance="25.71"/>
+                        </PointsPath>
+                        <Fill name="right_eye_border fill">
+                            <SolidColor name="Color" colorValue="FF2E1E4A"/>
+                        </Fill>
+                    </Shape>
+                </Node>
+
+                <Node name="Head Surface Details" id="0:70">
+                    <Shape name="Forehead Crown" id="0:71">
+                        <PointsPath name="forehead_crown" isClosed="true">
+                            <CubicDetachedVertex x="170.9" y="135.25" inRotation="0" inDistance="25.3" outRotation="-0.694738" outDistance="35.93"/>
+                            <CubicDetachedVertex x="244.5" y="123.75" inRotation="-2.761086" inDistance="24.77" outRotation="-0.551655" outDistance="35.11"/>
+                            <CubicDetachedVertex x="334.2" y="142.15" inRotation="-2.356194" inDistance="39.03" outRotation="-2.8023" outDistance="41.46"/>
+                            <CubicDetachedVertex x="246.8" y="155.95" inRotation="-1.012197" inDistance="21.7" outRotation="-2.642246" outDistance="28.82"/>
+                        </PointsPath>
+                        <Fill name="forehead_crown fill">
+                            <SolidColor name="Color" colorValue="FFFBFAFF"/>
+                        </Fill>
+                    </Shape>
+                    <Shape name="Head Left Shade" id="0:72">
+                        <PointsPath name="head_left_shade" isClosed="true">
+                            <CubicDetachedVertex x="143.3" y="197.35" inRotation="1.390943" inDistance="25.71" outRotation="1.712693" outDistance="32.53"/>
+                            <CubicDetachedVertex x="175.5" y="264.05" inRotation="-2.819842" inDistance="21.82" outRotation="-2.761086" outDistance="24.77"/>
+                            <CubicDetachedVertex x="122.6" y="229.55" inRotation="1.063698" inDistance="23.68" outRotation="0.2783" outDistance="16.74"/>
+                        </PointsPath>
+                        <Fill name="head_left_shade fill">
+                            <SolidColor name="Color" colorValue="FFE6E3F2"/>
+                        </Fill>
+                    </Shape>
+                    <Shape name="Head Right Shade" id="0:73">
+                        <PointsPath name="head_right_shade" isClosed="true">
+                            <CubicDetachedVertex x="325" y="195.05" inRotation="1.304544" inDistance="26.22" outRotation="0.674741" outDistance="29.45"/>
+                            <CubicDetachedVertex x="295.1" y="268.65" inRotation="-0.628796" inDistance="31.28" outRotation="-0.745419" outDistance="40.69"/>
+                        </PointsPath>
+                        <Fill name="head_right_shade fill">
+                            <SolidColor name="Color" colorValue="FFE7E3F3"/>
+                        </Fill>
+                    </Shape>
+                    <Shape name="Left Cheek Light" id="0:74">
+                        <PointsPath name="left_cheek_light" isClosed="true">
+                            <CubicDetachedVertex x="157.1" y="220.35" inRotation="0" inDistance="0" outRotation="1.203622" outDistance="32.04"/>
+                            <CubicDetachedVertex x="228.4" y="270.95" inRotation="3.058451" inDistance="27.7" outRotation="2.761086" outDistance="24.77"/>
+                            <CubicDetachedVertex x="152.5" y="252.55" inRotation="0.851966" inDistance="24.45" outRotation="0" outDistance="0"/>
+                        </PointsPath>
+                        <Fill name="left_cheek_light fill">
+                            <SolidColor name="Color" colorValue="FFFBFAFF"/>
+                        </Fill>
+                    </Shape>
+                    <Shape name="Right Cheek Light" id="0:75">
+                        <PointsPath name="right_cheek_light" isClosed="true">
+                            <CubicDetachedVertex x="283.6" y="236.45" inRotation="0" inDistance="0" outRotation="-0.358771" outDistance="39.3"/>
+                            <CubicDetachedVertex x="354.9" y="176.65" inRotation="1.989021" inDistance="22.65" outRotation="1.675673" outDistance="43.94"/>
+                            <CubicDetachedVertex x="290.5" y="254.85" inRotation="-0.076772" inDistance="29.99" outRotation="0" outDistance="0"/>
+                        </PointsPath>
+                        <Fill name="right_cheek_light fill">
+                            <SolidColor name="Color" colorValue="FFFBFAFF"/>
+                        </Fill>
+                    </Shape>
+                    <Shape name="Forehead Stripe" id="0:76">
+                        <PointsPath name="forehead_stripe" isClosed="true">
+                            <CubicDetachedVertex x="228.4" y="91.55" inRotation="1.695151" inDistance="18.54" outRotation="1.249046" outDistance="21.82"/>
+                            <CubicDetachedVertex x="235.3" y="139.85" inRotation="-1.428899" inDistance="16.26" outRotation="-1.892547" outDistance="14.55"/>
+                        </PointsPath>
+                        <Fill name="forehead_stripe fill">
+                            <SolidColor name="Color" colorValue="A6201433"/>
+                        </Fill>
+                    </Shape>
+                    <Shape name="Forehead Flick" id="0:77">
+                        <PointsPath name="forehead_flick" isClosed="true">
+                            <CubicDetachedVertex x="267.5" y="107.65" inRotation="0" inDistance="0" outRotation="-0.463648" outDistance="20.57"/>
+                            <CubicDetachedVertex x="318.1" y="116.85" inRotation="-2.265535" inDistance="17.96" outRotation="-2.819842" outDistance="21.82"/>
+                            <CubicDetachedVertex x="267.5" y="119.15" inRotation="-0.588003" inDistance="16.59" outRotation="0" outDistance="0"/>
+                        </PointsPath>
+                        <Fill name="forehead_flick fill">
+                            <SolidColor name="Color" colorValue="A6201433"/>
+                        </Fill>
+                    </Shape>
+                    <Shape name="Ear Bridge Flick" id="0:78">
+                        <PointsPath name="ear_bridge_flick" isClosed="true">
+                            <CubicDetachedVertex x="320.4" y="132.95" inRotation="0" inDistance="0" outRotation="-0.165149" outDistance="13.99"/>
+                            <CubicDetachedVertex x="357.2" y="149.05" inRotation="-2.158799" inDistance="16.59" outRotation="-2.819842" outDistance="14.55"/>
+                            <CubicDetachedVertex x="320.4" y="144.45" inRotation="-0.165149" inDistance="13.99" outRotation="0" outDistance="0"/>
+                        </PointsPath>
+                        <Fill name="ear_bridge_flick fill">
+                            <SolidColor name="Color" colorValue="A6241638"/>
+                        </Fill>
+                    </Shape>
+                    <Shape name="Left Face Flick" id="0:79">
+                        <PointsPath name="left_face_flick" isClosed="true">
+                            <CubicDetachedVertex x="152.5" y="160.55" inRotation="2.466852" inDistance="14.73" outRotation="1.951303" outDistance="12.39"/>
+                            <CubicDetachedVertex x="145.6" y="199.65" inRotation="-1.768192" inDistance="11.73" outRotation="-1.892547" outDistance="14.55"/>
+                        </PointsPath>
+                        <Fill name="left_face_flick fill">
+                            <SolidColor name="Color" colorValue="A6291840"/>
+                        </Fill>
+                    </Shape>
+                </Node>
+
+                <Node name="Head Base" id="0:12">
+                    <Shape name="Head Outline" id="0:20">
+                        <PointsPath name="head_outline" isClosed="true">
+                            <CubicDetachedVertex x="166.3" y="126.05" inRotation="2.582993" inDistance="21.7" outRotation="-0.528074" outDistance="31.95"/>
+                            <CubicDetachedVertex x="233" y="116.85" inRotation="-2.761086" inDistance="24.77" outRotation="-1.849096" outDistance="16.74"/>
+                            <CubicDetachedVertex x="235.3" y="75.45" inRotation="2.214297" inDistance="11.5" outRotation="1.390943" outDistance="25.71"/>
+                            <CubicDetachedVertex x="258.3" y="112.25" inRotation="-2.356194" inDistance="9.76" outRotation="-0.694738" outDistance="17.96"/>
+                            <CubicDetachedVertex x="315.8" y="116.85" inRotation="-2.634494" inDistance="23.68" outRotation="-1.570796" outDistance="11.5"/>
+                            <CubicDetachedVertex x="336.5" y="91.55" inRotation="2.896614" inDistance="9.48" outRotation="1.768192" outDistance="23.46"/>
+                            <CubicDetachedVertex x="350.3" y="132.95" inRotation="-2.601173" inDistance="13.41" outRotation="2.356194" outDistance="9.76"/>
+                            <CubicDetachedVertex x="373.3" y="146.75" inRotation="3.141593" inDistance="16.1" outRotation="2.191046" outDistance="19.79"/>
+                            <CubicDetachedVertex x="341.1" y="176.65" inRotation="-1.373401" inDistance="11.73" outRotation="1.107149" outDistance="15.43"/>
+                            <CubicDetachedVertex x="343.4" y="218.05" inRotation="-0.876058" inDistance="17.96" outRotation="2.034444" outDistance="20.57"/>
+                            <CubicDetachedVertex x="322.7" y="266.35" inRotation="-1.929567" inDistance="19.65" outRotation="2.999696" outDistance="16.26"/>
+                            <CubicDetachedVertex x="292.8" y="289.35" inRotation="-0.927295" inDistance="11.5" outRotation="-2.792822" outDistance="26.92"/>
+                            <CubicDetachedVertex x="228.4" y="293.95" inRotation="0.380506" inDistance="24.77" outRotation="3.141593" outDistance="27.6"/>
+                            <CubicDetachedVertex x="164" y="282.45" inRotation="0" inDistance="20.7" outRotation="-2.976444" outDistance="13.99"/>
+                            <CubicDetachedVertex x="129.5" y="261.75" inRotation="0.785398" inDistance="16.26" outRotation="0" outDistance="16.1"/>
+                            <CubicDetachedVertex x="154.8" y="250.25" inRotation="2.356194" inDistance="6.51" outRotation="3.141593" outDistance="25.3"/>
+                            <CubicDetachedVertex x="115.7" y="229.55" inRotation="1.107149" inDistance="10.29" outRotation="0.124355" outDistance="18.54"/>
+                            <CubicDetachedVertex x="147.9" y="220.35" inRotation="1.892547" inDistance="7.27" outRotation="-2.819842" outDistance="21.82"/>
+                            <CubicDetachedVertex x="129.5" y="185.85" inRotation="1.892547" inDistance="14.55" outRotation="-1.325818" outDistance="28.45"/>
+                        </PointsPath>
+                        <Fill name="head_outline fill">
+                            <SolidColor name="Color" colorValue="FFF7F5FF"/>
+                        </Fill>
+                    </Shape>
+                </Node>
+
+                <Node name="Left Ear" id="0:21">
+                    <Shape name="Left Ear Edge" id="0:64">
+                        <PointsPath name="left_ear_edge" isClosed="true">
+                            <CubicDetachedVertex x="76.6" y="116.85" inRotation="1.460139" inDistance="20.83" outRotation="-0.321751" outDistance="21.82"/>
+                            <CubicDetachedVertex x="136.4" y="123.75" inRotation="-2.677945" inDistance="15.43" outRotation="-2.914794" outDistance="30.69"/>
+                            <CubicDetachedVertex x="83.5" y="126.05" inRotation="-0.380506" inDistance="12.39" outRotation="1.272297" outDistance="31.28"/>
+                            <CubicDetachedVertex x="136.4" y="195.05" inRotation="-2.55359" inDistance="24.88" outRotation="-2.750986" outDistance="42.28"/>
+                        </PointsPath>
+                        <Fill name="left_ear_edge fill">
+                            <SolidColor name="Color" colorValue="FFD4C9F3"/>
+                        </Fill>
+                    </Shape>
+                    <Shape name="Left Ear Fur" id="0:63">
+                        <PointsPath name="left_ear_fur" isClosed="true">
+                            <CubicDetachedVertex x="113.4" y="144.45" inRotation="0" inDistance="0" outRotation="0" outDistance="23"/>
+                            <CubicDetachedVertex x="161.7" y="181.25" inRotation="-1.768192" inDistance="23.46" outRotation="-2.432966" outDistance="21.2"/>
+                            <CubicDetachedVertex x="115.7" y="165.15" inRotation="-0.141897" inDistance="16.26" outRotation="0" outDistance="0"/>
+                        </PointsPath>
+                        <Fill name="left_ear_fur fill">
+                            <SolidColor name="Color" colorValue="FFCDC4E9"/>
+                        </Fill>
+                    </Shape>
+                    <Shape name="Left Ear Inner" id="0:62">
+                        <PointsPath name="left_ear_inner" isClosed="true">
+                            <CubicDetachedVertex x="92.7" y="123.75" inRotation="0.54042" inDistance="26.82" outRotation="-0.124355" outDistance="37.09"/>
+                            <CubicDetachedVertex x="166.3" y="165.15" inRotation="-1.837048" inDistance="26.22" outRotation="-2.574863" outDistance="29.99"/>
+                        </PointsPath>
+                        <Fill name="left_ear_inner fill">
+                            <SolidColor name="Color" colorValue="FF201336"/>
+                        </Fill>
+                    </Shape>
+                    <Shape name="Left Ear Outer" id="0:61">
+                        <PointsPath name="left_ear_outer" isClosed="true">
+                            <CubicDetachedVertex x="141" y="211.15" inRotation="0.226799" inDistance="30.69" outRotation="-2.613518" outDistance="31.95"/>
+                            <CubicDetachedVertex x="72" y="116.85" inRotation="1.267911" inDistance="38.56" outRotation="-0.418224" outDistance="22.65"/>
+                            <CubicDetachedVertex x="152.5" y="121.45" inRotation="-2.792822" inDistance="26.92" outRotation="0.394791" outDistance="29.9"/>
+                            <CubicDetachedVertex x="205.4" y="183.55" inRotation="-1.712693" inDistance="32.53" outRotation="1.951303" outDistance="24.77"/>
+                        </PointsPath>
+                        <Fill name="left_ear_outer fill">
+                            <SolidColor name="Color" colorValue="FFF9F7FF"/>
+                        </Fill>
+                    </Shape>
+                </Node>
+
+                <Node name="Right Ear" id="0:24">
+                    <Shape name="Right Ear Tuft" id="0:68">
+                        <PointsPath name="right_ear_tuft" isClosed="true">
+                            <CubicDetachedVertex x="315.8" y="128.35" inRotation="0" inDistance="0" outRotation="-0.844154" outDistance="27.7"/>
+                            <CubicDetachedVertex x="350.3" y="116.85" inRotation="-2.034444" inDistance="10.29" outRotation="3.141593" outDistance="9.2"/>
+                            <CubicDetachedVertex x="334.2" y="132.95" inRotation="-1.325818" inDistance="9.48" outRotation="0" outDistance="0"/>
+                        </PointsPath>
+                        <Fill name="right_ear_tuft fill">
+                            <SolidColor name="Color" colorValue="FFF9F7FF"/>
+                        </Fill>
+                    </Shape>
+                    <Shape name="Right Ear Inner" id="0:67">
+                        <PointsPath name="right_ear_inner" isClosed="true">
+                            <CubicDetachedVertex x="258.3" y="116.85" inRotation="0" inDistance="0" outRotation="-1.158386" outDistance="40.17"/>
+                            <CubicDetachedVertex x="311.2" y="38.65" inRotation="2.432966" inDistance="21.2" outRotation="2.446854" outDistance="35.93"/>
+                            <CubicDetachedVertex x="269.8" y="119.15" inRotation="-1.438245" inDistance="34.81" outRotation="0" outDistance="0"/>
+                        </PointsPath>
+                        <Fill name="right_ear_inner fill">
+                            <SolidColor name="Color" colorValue="FFB9AEDB"/>
+                        </Fill>
+                    </Shape>
+                    <Shape name="Right Ear Dark" id="0:66">
+                        <PointsPath name="right_ear_dark" isClosed="true">
+                            <CubicDetachedVertex x="302" y="43.25" inRotation="1.789465" inDistance="21.2" outRotation="0.844154" outDistance="27.7"/>
+                            <CubicDetachedVertex x="329.6" y="121.45" inRotation="-1.570796" inDistance="27.6" outRotation="-2.265535" outDistance="17.96"/>
+                            <CubicDetachedVertex x="290.5" y="98.45" inRotation="0.165149" inDistance="13.99" outRotation="-1.292497" outDistance="16.74"/>
+                        </PointsPath>
+                        <Fill name="right_ear_dark fill">
+                            <SolidColor name="Color" colorValue="FF1B1034"/>
+                        </Fill>
+                    </Shape>
+                    <Shape name="Right Ear Outer" id="0:65">
+                        <PointsPath name="right_ear_outer" isClosed="true">
+                            <CubicDetachedVertex x="235.3" y="144.45" inRotation="0.847817" inDistance="52.14" outRotation="-1.484058" outDistance="53.1"/>
+                            <CubicDetachedVertex x="313.5" y="24.85" inRotation="2.677945" inDistance="41.14" outRotation="0.785398" outDistance="39.03"/>
+                            <CubicDetachedVertex x="336.5" y="149.05" inRotation="-1.3633" inDistance="44.66" outRotation="2.083186" outDistance="42.22"/>
+                        </PointsPath>
+                        <Fill name="right_ear_outer fill">
+                            <SolidColor name="Color" colorValue="FFFAF8FF"/>
+                        </Fill>
+                    </Shape>
+                </Node>
+            </Node>
+        </Node>
+    </Artboard>
+</Rive>
