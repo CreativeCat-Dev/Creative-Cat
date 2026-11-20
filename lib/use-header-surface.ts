@@ -6,14 +6,16 @@ import { usePathname } from "next/navigation";
 /**
  * Declarative surface contract for the fixed header.
  *
- * Sections declare `data-header-surface="light" | "dark" | "coral"`; the header
- * samples whichever of them covers its vertical centre and takes that
- * foreground. This replaces the previous "does the header overlap the footer"
- * test, which could not describe any section other than the footer.
+ * Sections declare `data-header-surface="light" | "dark" | "coral" | "inherit"`;
+ * the header samples whichever of them covers its vertical centre and takes
+ * that foreground. This replaces the previous "does the header overlap the
+ * footer" test, which could not describe any section other than the footer.
  *
  * NF-2 replaced the temporary fallback that treated `[data-footer]` as an
  * implicit dark surface. The footer now declares its surface like every other
- * section, so this hook has exactly one rule and no special cases.
+ * section, so this hook has exactly one rule and no special cases. `inherit` is
+ * the theme-following declaration used by the footer, which is light in the
+ * light theme and midnight in the dark one.
  *
  * With no declaration anywhere, the header **inherits the theme foreground**
  * rather than assuming a light page: the homepage canvas is `bg-background`,
@@ -50,7 +52,7 @@ function setScrolled(next: boolean): void {
 }
 
 function isSurface(value: string | null): value is HeaderSurface {
-  return value === "light" || value === "dark" || value === "coral";
+  return value === "light" || value === "dark" || value === "coral" || value === "inherit";
 }
 
 function measure(): void {

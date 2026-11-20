@@ -15,9 +15,13 @@ import { FOOTER_CAPABILITIES, FOOTER_COPYRIGHT, FOOTER_PAGES } from "./footer.da
  * in the shell that carries the header-surface contract. Wrapping it in a second
  * `<footer>` would give the document two landmarks for one region.
  *
- * The footer is a permanent dark signature section: the palette is fixed rather
- * than theme-derived, so both page themes paint the same midnight surface and
- * the navbar's declared `dark` foreground always matches what is underneath it.
+ * The footer follows the page theme through CSS only. Its palette is a set of
+ * `--cc-footer-*` variables declared on `:root` and `.dark`, so toggling the
+ * theme class recolours the live footer instantly: no React theme state, no
+ * remount, no replayed entrance and no reset crew, gaze or speech state.
+ *
+ * `data-header-surface="inherit"` is the theme-following mode: the navbar takes
+ * the page foreground, which is exactly what sits behind it in either theme.
  *
  * `brandMark` passes the site's own `Logo` in place of the component's demo
  * badge, so the footer carries the same identity as the navbar without this
@@ -28,13 +32,16 @@ import { FOOTER_CAPABILITIES, FOOTER_COPYRIGHT, FOOTER_PAGES } from "./footer.da
  * actions come from this site's own footer data.
  */
 
-// The Creative Cat palette, passed through the component's own API so every
-// derivative tone (muted text, hairlines, shadows) is mixed from these four.
+// The Creative Cat palette, resolved in CSS per theme. The component derives
+// every muted tone, hairline and shadow from these, so light mode is white
+// paper with midnight ink and dark mode is the approved midnight surface.
 const BRAND = {
-  background: "#150E34",
-  ink: "#FFFFFF",
-  accent: "#FF1C43",
-  depth: "#631339",
+  background: "var(--cc-footer-bg)",
+  ink: "var(--cc-footer-ink)",
+  accent: "var(--cc-footer-accent)",
+  depth: "var(--cc-footer-depth)",
+  // The coral CTA is coral in both themes, so its label is always midnight.
+  onAccent: "var(--cc-footer-on-accent)",
 };
 
 const COLUMNS: FooterColumn[] = [
@@ -116,7 +123,7 @@ const CREW: CrewMember[] = [
 
 export function Footer() {
   return (
-    <div data-footer data-header-surface="dark" style={{ colorScheme: "dark" }}>
+    <div data-footer data-header-surface="inherit">
       <DoodleCrewFooter
         wordmark="CREATIVE CAT"
         brandMark={<Logo className="h-9 w-auto md:h-10" />}

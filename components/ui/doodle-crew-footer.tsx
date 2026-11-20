@@ -77,7 +77,7 @@ export const stepFloater = (
     }
     return f
   }
-  const sway = Math.sin(t * 0.7 + f.phase) * 14
+  const sway = Math.sin(t * 0.5 + f.phase) * 8
   if (Number.isFinite(px) && Number.isFinite(py) && radius > 0) {
     const dx = f.x - px
     const dy = f.y - py
@@ -92,7 +92,7 @@ export const stepFloater = (
   const ease = Math.min(1, step * 2.4)
   f.vx += (sway - f.vx) * ease
   f.vy += (f.fall - f.vy) * ease
-  f.vr += (Math.sin(f.phase * 3) * 18 - f.vr) * Math.min(1, step * 0.8)
+  f.vr += (Math.sin(f.phase * 3) * 12 - f.vr) * Math.min(1, step * 0.8)
   f.x += f.vx * step
   f.y += f.vy * step
   f.rot = (f.rot + f.vr * step) % 360
@@ -187,9 +187,11 @@ export interface DoodleCrewFooterProps {
   preset?: DoodleCrewPreset
   /**
    * Brand palette. `depth` is the dark secondary tone used for graphic depth
-   * (never for small text); it falls back to `accent` when omitted.
+   * (never for small text); it falls back to `accent` when omitted. `onAccent`
+   * is the label colour on an accent-filled control, so a host can keep the
+   * accent constant across themes while its foreground stays legible.
    */
-  palette?: { background?: string; ink?: string; accent?: string; depth?: string }
+  palette?: { background?: string; ink?: string; accent?: string; depth?: string; onAccent?: string }
   /** Display face for the wordmark. Heavy grotesks stamp best. */
   fontFamily?: string
   /** Face for the tagline and blurb. */
@@ -962,8 +964,8 @@ export default function DoodleCrewFooter({
           vx: 0,
           vy: 0,
           rot: (hash(k * 1.7) - 0.5) * 50,
-          vr: (hash(k * 6.1) - 0.5) * 30,
-          fall: 9 + hash(k * 2.9) * 16,
+          vr: (hash(k * 6.1) - 0.5) * 20,
+          fall: 4 + hash(k * 2.9) * 6,
           phase: hash(k * 8.3) * Math.PI * 2,
           pop: 0,
         }))
@@ -1169,6 +1171,9 @@ export default function DoodleCrewFooter({
     // not define it fall back to the accent, so the component never invents a
     // fourth colour of its own.
     "--dcf-depth": colors.depth || colors.accent,
+    // Foreground for accent-filled controls. Defaults to the background, which
+    // is the demo's original accent-on-ink treatment.
+    "--dcf-on-accent": colors.onAccent || colors.background,
     "--dcf-serif": serifFamily,
     "--dcf-display": fontFamily,
     minHeight: height,
@@ -1549,8 +1554,8 @@ const CSS =
   ".dcf-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}" +
   ".dcf-btn{display:inline-flex;align-items:center;gap:8px;height:46px;padding:0 20px 0 16px;border-radius:999px;border:2px solid var(--dcf-ink);font-size:14.5px;font-weight:750;letter-spacing:-.01em;box-shadow:0 3px 0 var(--dcf-ink);transition:transform .18s cubic-bezier(.3,1.4,.5,1),box-shadow .18s cubic-bezier(.3,1.4,.5,1)}" +
   ".dcf-btn.is-outline{background:transparent;color:var(--dcf-ink)}" +
-  ".dcf-btn.is-solid{background:var(--dcf-accent);color:var(--dcf-bg);border-color:var(--dcf-accent);box-shadow:0 3px 0 var(--dcf-depth)}" +
-  ".dcf-btn.is-solid .dcf-icon{stroke:var(--dcf-bg)}" +
+  ".dcf-btn.is-solid{background:var(--dcf-accent);color:var(--dcf-on-accent);border-color:var(--dcf-accent);box-shadow:0 3px 0 var(--dcf-depth)}" +
+  ".dcf-btn.is-solid .dcf-icon{stroke:var(--dcf-on-accent)}" +
   ".dcf-btn:hover{transform:translateY(-2px) rotate(-1.2deg);box-shadow:0 5px 0 var(--dcf-ink)}" +
   ".dcf-btn.is-solid:hover{box-shadow:0 5px 0 var(--dcf-depth)}" +
   ".dcf-btn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--dcf-ink);transition-duration:.06s}.dcf-btn.is-outline:hover{color:var(--dcf-accent);border-color:var(--dcf-accent)}" +

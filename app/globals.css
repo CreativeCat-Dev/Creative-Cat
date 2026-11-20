@@ -42,6 +42,20 @@
     --sidebar-accent-foreground: #150E34;
     --sidebar-border: #150E341F;
     --sidebar-ring: #FF1C43;
+
+    /*
+     * Footer surface. Light mode is paper — a white sheet with midnight ink —
+     * and dark mode keeps the midnight signature surface. The Doodle Crew
+     * footer resolves these through its own --dcf-* variables, so toggling the
+     * .dark class recolours a live footer with no remount and no replayed
+     * entrance. `--cc-footer-on-accent` is the label on the coral CTA, which is
+     * coral in both themes and therefore always takes midnight text.
+     */
+    --cc-footer-bg: #FFFFFF;
+    --cc-footer-ink: #150E34;
+    --cc-footer-accent: #FF1C43;
+    --cc-footer-depth: #631339;
+    --cc-footer-on-accent: #150E34;
 }
 
 .dark {
@@ -76,6 +90,13 @@
     --sidebar-accent-foreground: #FFFFFF;
     --sidebar-border: #FFFFFF1F;
     --sidebar-ring: #FF1C43;
+
+    /* Footer: midnight surface, white ink. Coral and wine stay put. */
+    --cc-footer-bg: #150E34;
+    --cc-footer-ink: #FFFFFF;
+    --cc-footer-accent: #FF1C43;
+    --cc-footer-depth: #631339;
+    --cc-footer-on-accent: #150E34;
 }
 
 @theme inline {
