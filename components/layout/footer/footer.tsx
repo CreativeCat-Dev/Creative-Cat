@@ -1,67 +1,136 @@
-import { microLabel } from "@/lib/ui";
-import { FooterBackToTop } from "./footer-back-to-top";
-import { FooterCta } from "./footer-cta";
-import { FOOTER_COPYRIGHT } from "./footer.data";
-import { FooterGrid } from "./footer-grid";
-import { FooterMotion } from "./footer-motion";
+import type {
+  CrewMember,
+  DoodleKind,
+  FooterAction,
+  FooterColumn,
+} from "@/components/ui/doodle-crew-footer";
+import DoodleCrewFooter from "@/components/ui/doodle-crew-footer";
+import { Logo } from "@/components/layout/logo";
+import { FOOTER_CAPABILITIES, FOOTER_COPYRIGHT, FOOTER_PAGES } from "./footer.data";
 
 /**
- * Always-branded closing section: the `dark` class pins the surface to midnight
- * in both themes, exactly like the navigation overlay, so the footer does not
- * introduce a second colour system.
+ * The site footer, rendered by the finished Doodle Crew Footer.
  *
- * The oversized wordmark is a print watermark, not a heading. It sits in its own
- * band between the grid and the bottom bar rather than behind the columns: a
- * band that adds real height cannot collide with the lists, which an absolutely
- * positioned element could only avoid by shrinking. Negative margins push it
- * past the section padding so the word runs near full-bleed, and
- * `overflow-x-clip` on the footer crops what is left over.
+ * The component draws its own `<footer>` landmark, so this module only wraps it
+ * in the shell that carries the header-surface contract. Wrapping it in a second
+ * `<footer>` would give the document two landmarks for one region.
  *
- * The composition is capped at 1920px inside a full-bleed surface. The cap sits
- * on the motion root, which already owns the horizontal padding, so a 2560px
- * monitor renders exactly the 1920px layout centred on midnight rather than a
- * stretched one; the watermark is centred type, so it is unaffected.
+ * The footer is a permanent dark signature section: the palette is fixed rather
+ * than theme-derived, so both page themes paint the same midnight surface and
+ * the navbar's declared `dark` foreground always matches what is underneath it.
  *
- * The markup below is the finished footer. `FooterMotion` adds the entrance
- * after hydration and is the only client JavaScript in the section; nothing here
- * is hidden by CSS, so the footer is complete without JavaScript.
+ * `brandMark` passes the site's own `Logo` in place of the component's demo
+ * badge, so the footer carries the same identity as the navbar without this
+ * component ever importing the navbar.
+ *
+ * Everything else here is configuration, not implementation: doodles, crew
+ * roles and seats come from the finished component; copy, link columns and
+ * actions come from this site's own footer data.
  */
+
+// The Creative Cat palette, passed through the component's own API so every
+// derivative tone (muted text, hairlines, shadows) is mixed from these four.
+const BRAND = {
+  background: "#150E34",
+  ink: "#FFFFFF",
+  accent: "#FF1C43",
+  depth: "#631339",
+};
+
+const COLUMNS: FooterColumn[] = [
+  {
+    title: "01 / Pages",
+    links: FOOTER_PAGES.map(({ label, href }) => ({ label, href })),
+  },
+  {
+    title: "02 / Capabilities",
+    links: FOOTER_CAPABILITIES.map(({ label, href }) => ({ label, href })),
+  },
+];
+
+const ACTIONS: FooterAction[] = [
+  { label: "Let's talk", href: "/contact", icon: "mail", variant: "solid" },
+  { label: "See our work", href: "/work", icon: "target", variant: "outline" },
+];
+
+// Art direction for the drifting ink, from the reference demo.
+const DOODLES: DoodleKind[] = [
+  "megaphone",
+  "chart",
+  "target",
+  "bulb",
+  "hashtag",
+  "mail",
+  "coin",
+  "heart",
+];
+
+/**
+ * Five crew members, every one of them a cat: the drawing set's `artist`,
+ * `cat`, `sleeper`, `filmmaker` and `coder` roles all share the same seated cat
+ * body. The reference demo's `mushroom` sat at letter 2; it is replaced by the
+ * built-in `cat` role with its own default name and line, which keeps the seat,
+ * offset and scale the demo had tuned for that letter.
+ */
+const CREW: CrewMember[] = [
+  {
+    kind: "artist",
+    letter: 0,
+    offset: -0.3,
+    flip: true,
+    name: "Bruno",
+    says: "Hold still. I'm sketching you.",
+  },
+  {
+    kind: "cat",
+    letter: 2,
+    seat: "front",
+    offset: 0.12,
+    scale: 0.95,
+    name: "Patch",
+    says: "Arr. Nice cursor.",
+  },
+  {
+    kind: "sleeper",
+    letter: 4,
+    name: "Pip",
+    says: "Zzz… Q4 campaign… zzz.",
+  },
+  {
+    kind: "filmmaker",
+    letter: 7,
+    offset: 0.4,
+    scale: 0.85,
+    name: "Juno",
+    says: "And… action!",
+  },
+  {
+    kind: "coder",
+    letter: 11,
+    offset: 0.4,
+    scale: 0.9,
+    name: "Boo",
+    says: "Shh. Shipping.",
+  },
+];
+
 export function Footer() {
   return (
-    <footer data-footer className="dark overflow-x-clip bg-background text-foreground">
-      <FooterMotion>
-        <FooterCta />
-
-        <hr data-footer-rule className="border-border" />
-
-        <FooterGrid />
-
-        {/*
-          Hidden below `md`: the stacked mobile composition has no room for a
-          band this tall, and the mobile layout drops it by design. The motion
-          hook sits on the span, not the band, because the span is the element
-          that carries the resting opacity.
-        */}
-        <div
-          aria-hidden
-          className="pointer-events-none -mx-6 hidden select-none md:-mx-10 md:block lg:-mx-14"
-        >
-          <span
-            data-footer-watermark
-            className="block whitespace-nowrap text-center font-heading text-[clamp(90px,13vw,250px)] font-medium uppercase leading-[0.78] tracking-[-0.03em] text-white opacity-[0.065]"
-          >
-            Creative Cat
-          </span>
-        </div>
-
-        <div
-          data-footer-bottom
-          className="flex flex-wrap items-center justify-between gap-4 border-t border-border pt-6"
-        >
-          <p className={`text-muted-foreground/70 ${microLabel}`}>{FOOTER_COPYRIGHT}</p>
-          <FooterBackToTop />
-        </div>
-      </FooterMotion>
-    </footer>
+    <div data-footer data-header-surface="dark" style={{ colorScheme: "dark" }}>
+      <DoodleCrewFooter
+        wordmark="CREATIVE CAT"
+        brandMark={<Logo className="h-9 w-auto md:h-10" />}
+        blurb="Independent Creative Studio"
+        tagline="Let's create something great"
+        copyright={FOOTER_COPYRIGHT}
+        columns={COLUMNS}
+        actions={ACTIONS}
+        legal={[]}
+        socials={[]}
+        palette={BRAND}
+        doodles={DOODLES}
+        crew={CREW}
+      />
+    </div>
   );
 }

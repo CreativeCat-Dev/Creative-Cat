@@ -3,12 +3,6 @@ import { Logo } from "@/components/layout/logo";
 import { focusRing, microLabel } from "@/lib/ui";
 import { FOOTER_CAPABILITIES, FOOTER_PAGES, type FooterEntry } from "./footer.data";
 
-/**
- * Pages link treatment. The arrow is always in the layout and only fades in, so
- * hovering never reflows the row. Colour and opacity transitions are kept; the
- * two position changes are gated behind `motion-safe`, which makes reduced
- * motion get the end state instantly instead of a lift.
- */
 function FooterLink({ href, children }: { href: string; children: string }) {
   return (
     <Link
@@ -37,11 +31,9 @@ function FooterLink({ href, children }: { href: string; children: string }) {
 }
 
 type FooterColumnProps = {
-  /** Decorative section number; hidden from assistive tech. */
   number: string;
   title: string;
   items: readonly FooterEntry[];
-  /** Flow the list into two columns on wide screens, reading down then across. */
   split?: boolean;
 };
 
@@ -55,11 +47,6 @@ function FooterColumn({ number, title, items, split = false }: FooterColumnProps
         {title}
       </h2>
 
-      {/*
-        `grid-flow-col` + explicit rows fills the list down the first column and
-        then across, which is the reading order the composition implies. A plain
-        two-column grid would fill row-wise and pair the wrong entries.
-      */}
       <ul
         className={`mt-5 flex flex-col gap-2.5 ${
           split ? "lg:grid lg:grid-flow-col lg:grid-rows-3 lg:gap-x-10" : ""
@@ -79,15 +66,6 @@ function FooterColumn({ number, title, items, split = false }: FooterColumnProps
   );
 }
 
-/**
- * Three areas at 40 / 20 / 40 on wide screens: the brand gets the room, Pages
- * stays compact, Capabilities splits into two internal columns so it stops
- * reading as one long list.
- *
- * The two lists stay inside a single `nav` landmark; the outer 4fr/6fr split and
- * the inner 1fr/2fr split are what produce the 40/20/40 ratio without a third
- * grid track.
- */
 export function FooterGrid() {
   return (
     <div className="grid lg:grid-cols-[4fr_6fr] lg:gap-14 sm:gap-10 md:gap-12">

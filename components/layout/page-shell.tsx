@@ -7,16 +7,6 @@ type PageShellProps = {
   children: ReactNode;
 };
 
-/**
- * Owns the fixed-header relationship for every page.
- *
- * The header floats over content and deliberately adds no top offset, so a hero
- * can start at the top edge of the viewport. Pages that need breathing room
- * below the header declare their own padding instead.
- *
- * MenuProvider wraps the shell so the navigation overlay can inert everything
- * else while it is open.
- */
 export function PageShell({ children }: PageShellProps) {
   return (
     <MenuProvider>

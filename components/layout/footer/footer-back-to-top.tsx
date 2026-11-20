@@ -2,11 +2,6 @@
 
 import { focusRing, microLabel } from "@/lib/ui";
 
-/**
- * Client island so the rest of the footer can stay a server component.
- * Respects reduced motion at click time, and is the seam that later routes
- * through Lenis instead of window.scrollTo.
- */
 export function FooterBackToTop() {
   const handleClick = () => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -17,7 +12,7 @@ export function FooterBackToTop() {
     <button
       type="button"
       onClick={handleClick}
-      className={`group inline-flex items-center gap-2 rounded-full px-1 py-1 text-foreground transition-colors hover:text-primary ${microLabel} ${focusRing}`}
+      className={`group inline-flex min-h-11 items-center gap-2 text-foreground transition-colors hover:text-primary ${microLabel} ${focusRing}`}
     >
       Back to top
       <svg

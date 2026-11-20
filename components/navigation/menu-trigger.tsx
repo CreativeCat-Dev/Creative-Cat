@@ -1,8 +1,17 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import { useMenu } from "./menu-provider";
 import { focusRing, microLabel } from "@/lib/ui";
 
+/**
+ * The closed-state menu control. It inherits the header's surface foreground
+ * rather than setting its own colour, so it stays readable on a white hero and
+ * on the midnight footer without per-surface variants.
+ *
+ * `min-h-11` gives the label a 44px touch target while the visible mark stays a
+ * small 11px label with two hairlines — no resting pill.
+ */
 export function MenuTrigger() {
   const { open, openMenu } = useMenu();
 
@@ -13,7 +22,12 @@ export function MenuTrigger() {
       aria-controls="site-menu"
       data-menu-trigger
       onClick={openMenu}
-      className={`inline-flex items-center gap-2 rounded-full px-1 py-1 text-foreground transition-colors hover:text-primary ${microLabel} ${focusRing}`}
+      className={cn(
+        "inline-flex min-h-11 items-center gap-2 transition-colors duration-200",
+        "hover:text-brand-coral",
+        microLabel,
+        focusRing
+      )}
     >
       Menu
       <span aria-hidden className="flex flex-col gap-[3px]">
