@@ -1,19 +1,22 @@
+import Image from "next/image";
 import Link from "next/link";
 import { focusRing, microLabel } from "@/lib/ui";
+import { WORK_PROJECT_COUNT, WORK_PROJECTS, type WorkProject } from "@/lib/work";
+import { HeroCard } from "./hero-card";
+import { HeroCatStage } from "./hero-cat";
+import { HeroCorridor } from "./hero-corridor";
+import { HeroFeaturedMeta } from "./hero-featured-meta";
 import { HeroMotion } from "./hero-motion";
+import { HeroStory } from "./hero-story";
+import { CAT_SOURCE } from "./hero.cat";
 import {
   HERO_BODY,
   HERO_CTA_PRIMARY,
   HERO_CTA_SECONDARY,
   HERO_EYEBROW,
   HERO_HEADLINE,
-  HERO_REEL_CAPTION,
 } from "./hero.data";
 
-/**
- * The same 10x10 arrow the navbar and footer use, kept inline so it inherits
- * `currentColor` and never depends on a font fallback glyph.
- */
 function Arrow({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 10 10" aria-hidden className={className}>
@@ -29,47 +32,92 @@ function Arrow({ className }: { className?: string }) {
 }
 
 const ctaLabel = "text-[12px] font-semibold uppercase tracking-[0.14em]";
+const pad2 = (value: number) => String(value).padStart(2, "0");
 
-/**
- * Hero composition. Still a server component: the only client JavaScript in the
- * section is `HeroMotion`, which wraps the content and owns the entrance. The
- * markup below is complete in the server HTML, so it reads correctly without
- * JavaScript and gains no hidden initial state.
- *
- * Layout is one screen tall: the section owns `min-h-svh`, the content column
- * (owned by `HeroMotion`) grows with `flex-1`, and the base rule stays pinned to
- * the bottom of that column. On short laptops the type block — not the aperture
- * — sets the row height, which is why the aperture is width-capped against the
- * viewport rather than height-capped: a `max-height` on an `aspect-ratio` box
- * would flatten it into a wider rectangle.
- */
+const FEATURED_INDEX = 0;
+const featured = WORK_PROJECTS[FEATURED_INDEX];
+const SUPPORT_INDEX = 4;
+const support = WORK_PROJECTS[SUPPORT_INDEX];
+
+const catSizes = "(min-width: 1024px) 1160px, 640px";
+
+function FeaturedMeta({ project, index }: { project: WorkProject; index: number }) {
+  return (
+    <div className="relative z-10 flex items-end justify-between gap-4">
+      <div className="min-w-0">
+        <p className={`text-muted-foreground ${microLabel}`}>Featured work</p>
+        <p className="mt-1.5 truncate font-heading text-[21px] leading-none tracking-[-0.01em]">
+          {project.name}
+        </p>
+      </div>
+      <p className="shrink-0 font-heading text-[13px] tracking-[0.06em] text-muted-foreground tabular-nums">
+        {pad2(index + 1)} / {WORK_PROJECT_COUNT}
+      </p>
+    </div>
+  );
+}
+
 export function Hero() {
   return (
-    <section
-      aria-labelledby="hero-title"
-      className="flex min-h-svh flex-col px-6 pt-32 pb-8 md:px-10 md:pt-36 md:pb-10 lg:px-14 lg:pb-12"
+    <div
+      data-hero-story
+      data-hero-mode="static"
+      className="relative"
+      style={{
+        minHeight: "100svh",
+        height: "var(--hero-story-h, auto)",
+      }}
     >
-      <HeroMotion>
-        <p data-hero-eyebrow className={`text-muted-foreground ${microLabel}`}>
-          {HERO_EYEBROW}
-        </p>
+      <HeroStory />
 
-        <div className="flex flex-1 flex-col justify-end">
-          <div className="grid gap-10 pt-10 lg:grid-cols-12 lg:items-end lg:gap-10">
-            <div className="lg:col-span-7">
-              {/* The type scale lives on the h1 rather than the inner span so the
-                  mask's `pb-[0.08em]` resolves against the headline size. The
-                  copy deliberately has no descenders: at `leading-[0.88]` the
-                  mask padding is tuned to this three-line statement, and the
-                  motion batch owns any future retuning. */}
+      <section
+        data-hero-stage
+        aria-labelledby="hero-title"
+        className="sticky top-0 isolate flex min-h-svh flex-col overflow-x-clip px-6 pt-24 pb-6 md:px-10 md:pt-28 md:pb-10 hero-lg:px-14 hero-lg:pt-36 hero-lg:pb-12"
+      >
+        {/* Theme-aware wash that seats the midnight-lit cat on either surface. */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-[18%] bottom-0 -z-10 [background:var(--cc-hero-glow)]"
+        />
+
+        <HeroMotion>
+          {/* Desktop stage: the corridor owns all thirteen cards, the cat sits in
+              front of it, and the semantic lane above both. */}
+          <div data-hero-desktop className="pointer-events-none absolute inset-x-0 top-0 bottom-[60px] z-0 hidden hero-lg:block [--corridor-w:clamp(268px,23.5vw,342px)]">
+            <HeroCorridor />
+
+            <div
+              data-hero-featured-anchor
+              className="absolute bottom-[calc(var(--corridor-w)*1.25+20px)] w-[var(--corridor-w)]"
+            >
+              <HeroFeaturedMeta />
+            </div>
+            <HeroCatStage poster={CAT_SOURCE.posters.settled} startPoster={CAT_SOURCE.posters.start} sizes={catSizes} />
+          </div>
+
+          <div data-hero-lane className="relative z-10 flex flex-1 flex-col hero-lg:pointer-events-none">
+            <div data-hero-copy className="hero-lg:max-w-[calc(36vw-4rem)] hero-lg:pointer-events-auto">
+              <p data-hero-eyebrow className={`text-muted-foreground ${microLabel}`}>
+                {HERO_EYEBROW}
+              </p>
+
               <h1
                 id="hero-title"
-                className="font-heading font-medium text-[clamp(46px,11.2vw,92px)] leading-[0.88] tracking-[-0.035em] lg:text-[clamp(64px,7.2vw,150px)]"
+                className="mt-4 font-heading font-medium text-[clamp(40px,11.2vw,56px)] leading-[0.88] tracking-[-0.035em] md:mt-6 hero-lg:text-[clamp(48px,4.75vw,72px)]"
               >
                 {HERO_HEADLINE.map((line, index) => (
-                  <span key={line} className="block overflow-hidden pb-[0.08em]">
+                  <span
+                    key={index}
+                    data-hero-compact-tail={line.hideInCompact ? "true" : undefined}
+                    className="block overflow-hidden pb-[0.08em]"
+                  >
                     <span data-hero-line className="block">
-                      {line}
+                      {line.segments.map((segment, segmentIndex) => (
+                        <span key={segmentIndex} data-hero-compact={segment.compact}>
+                          {segment.text}
+                        </span>
+                      ))}
                       {/* Keeps the accessible name a spaced sentence while the
                           visual breaks stay explicit. */}
                       {index < HERO_HEADLINE.length - 1 ? " " : null}
@@ -80,12 +128,12 @@ export function Hero() {
 
               <p
                 data-hero-body
-                className="mt-8 max-w-[38ch] text-sm leading-relaxed text-muted-foreground md:text-base lg:mt-10"
+                className="mt-4 max-w-[34ch] text-sm leading-relaxed text-muted-foreground md:text-base hero-lg:mt-6 hero-lg:max-w-[31ch]"
               >
                 {HERO_BODY}
               </p>
 
-              <div className="mt-6 flex flex-wrap items-center gap-x-8 gap-y-4 lg:mt-8">
+              <div data-hero-cta-group className="mt-4 flex flex-wrap items-center gap-x-8 gap-y-4 hero-lg:mt-6">
                 <Link
                   href={HERO_CTA_PRIMARY.href}
                   data-hero-cta
@@ -106,60 +154,62 @@ export function Hero() {
               </div>
             </div>
 
-            {/*
-              Media aperture. Geometry is final; the reel is not in the project
-              yet, so this is a designed placeholder rather than a fabricated
-              poster. When the cat/visor footage arrives it replaces the inner
-              surface with <video poster> plus an <Image> fallback at the same
-              box — the frame, ratio and caption never move.
+            {/* Phone: a shallow track, not a shrunken desktop stage. */}
+            <div aria-hidden data-hero-art-track className="relative hero-lg:hidden">
+              <div data-hero-card-side="left" className="absolute bottom-0 left-0">
+                <HeroCard
+                  project={support}
+                  sizes="42vw"
+                  className="shadow-[0_24px_50px_-36px_rgba(21,14,52,0.5)]"
+                />
+              </div>
+              <div data-hero-card-side="right" className="absolute right-0 bottom-0">
+                <HeroCard
+                  project={featured}
+                  sizes="42vw"
+                  className="shadow-[0_28px_60px_-38px_rgba(21,14,52,0.6)]"
+                />
+              </div>
+              <div data-hero-cat-box className="absolute bottom-0 left-1/2 aspect-[16/9] -translate-x-1/2">
+                <Image
+                  src={CAT_SOURCE.posters.settled}
+                  alt=""
+                  fill
+                  loading="eager"
+                  sizes="(min-width: 1024px) 1160px, (min-width: 768px) 640px, 100vw"
+                  className="object-contain object-bottom"
+                />
+              </div>
+            </div>
 
-              `max-w-[calc(0.75*58svh)]` bounds the *width* so height stays
-              derived from the ratio: at 1440x768 this renders 334x445 instead
-              of a stretched 420x445. `justify-self-end` keeps it flush to the
-              grid's outer edge when the cap is active.
-            */}
+            <div className="mt-4 max-w-[420px] hero-lg:hidden">
+              <FeaturedMeta project={featured} index={FEATURED_INDEX} />
+            </div>
+
+            <hr data-hero-rule className="mt-5 border-border hero-lg:mt-auto" />
             <div
-              aria-hidden
-              data-hero-media
-              className="relative aspect-[4/5] w-full max-w-[520px] overflow-hidden rounded-2xl bg-[linear-gradient(155deg,var(--color-brand-midnight)_12%,var(--color-brand-wine)_100%)] ring-1 ring-brand-coral/30 ring-inset lg:col-span-4 lg:col-start-9 lg:aspect-[3/4] lg:max-w-[calc(0.75*58svh)] lg:justify-self-end"
+              data-hero-meta
+              className="flex flex-wrap items-center justify-between gap-3 pt-3 hero-lg:pt-4"
             >
-              <span className="absolute inset-0 flex items-center justify-center">
-                <span className="flex size-14 items-center justify-center rounded-full border border-white/25 bg-white/5">
-                  <svg viewBox="0 0 12 14" aria-hidden className="ml-0.5 size-3 fill-white/70">
-                    <path d="M0 0l12 7-12 7z" />
-                  </svg>
-                </span>
-              </span>
+              <p className={`flex items-center gap-2 text-muted-foreground ${microLabel}`}>
+                Scroll
+                <svg viewBox="0 0 10 10" aria-hidden className="size-2.5">
+                  <path
+                    d="M5 1v8M1.5 5.5 5 9l3.5-3.5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.4"
+                    strokeLinecap="square"
+                  />
+                </svg>
+              </p>
+              <p className={`text-muted-foreground ${microLabel}`}>
+                {WORK_PROJECT_COUNT} projects
+              </p>
             </div>
           </div>
-        </div>
-
-        {/* The desktop gap is deliberately tighter than the mobile one: at
-            1440x768 the type block sets the row height, and the base rule has
-            to stay inside the fold or its small text clips at the viewport
-            edge.
-
-            The hairline is its own element rather than a `border-t` on the row
-            below: the entrance scales it from the left, and a border on the
-            flex row would scale the two labels along with it. Spacing is
-            unchanged, because 1px + pt-4 is the same box either way. */}
-        <hr data-hero-rule className="mt-8 border-border lg:mt-6" />
-        <div data-hero-meta className="flex flex-wrap items-center justify-between gap-3 pt-4">
-          <p className={`flex items-center gap-2 text-muted-foreground ${microLabel}`}>
-            Scroll
-            <svg viewBox="0 0 10 10" aria-hidden className="size-2.5">
-              <path
-                d="M5 1v8M1.5 5.5 5 9l3.5-3.5"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.4"
-                strokeLinecap="square"
-              />
-            </svg>
-          </p>
-          <p className={`text-muted-foreground ${microLabel}`}>{HERO_REEL_CAPTION}</p>
-        </div>
-      </HeroMotion>
-    </section>
+        </HeroMotion>
+      </section>
+    </div>
   );
 }

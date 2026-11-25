@@ -7,12 +7,43 @@
 export const HERO_EYEBROW = "Design · Branding · Motion · Development";
 
 /**
- * Three explicit lines rather than one wrapping string: the headline is the
- * largest type on the site and its breaks are a composition decision, not
- * something the viewport should decide. Each entry renders inside its own
- * overflow mask, which is what the motion batch will animate.
+ * The headline is a composition decision, not something the viewport should
+ * decide, so every break is explicit. Desktop reads as three lines. The centred
+ * compact composition — phones from 375px and the 768–1023px tablet band —
+ * reads "Ideas into brands" / "that move."; below 375px the three-line form
+ * returns because the joined first line no longer fits the content width.
+ *
+ * A segment can be shown or hidden only inside the compact band. That keeps one
+ * headline, one accessible h1 and one set of overflow masks: there is no
+ * duplicate hidden heading and the entrance still targets the same lines.
+ * `hideInCompact` removes a whole line from the compact composition.
  */
-export const HERO_HEADLINE = ["Ideas into", "brands that", "move."] as const;
+export type HeroHeadlineSegment = {
+  text: string;
+  compact?: "show" | "hide";
+};
+
+export type HeroHeadlineLine = {
+  segments: readonly HeroHeadlineSegment[];
+  hideInCompact?: boolean;
+};
+
+export const HERO_HEADLINE: readonly HeroHeadlineLine[] = [
+  {
+    segments: [{ text: "Ideas into" }, { text: " brands", compact: "show" }],
+  },
+  {
+    segments: [
+      { text: "brands ", compact: "hide" },
+      { text: "that" },
+      { text: " move.", compact: "show" },
+    ],
+  },
+  {
+    segments: [{ text: "move." }],
+    hideInCompact: true,
+  },
+];
 
 export const HERO_BODY =
   "We shape ideas into distinctive brands and digital experiences through strategy, design, motion, and development.";
@@ -24,6 +55,3 @@ export type HeroCta = {
 
 export const HERO_CTA_PRIMARY: HeroCta = { label: "Start a project", href: "/contact" };
 export const HERO_CTA_SECONDARY: HeroCta = { label: "View selected work", href: "/work" };
-
-/** Caption for the media aperture, aligned under its column in the base rule. */
-export const HERO_REEL_CAPTION = "Studio reel — 2026";

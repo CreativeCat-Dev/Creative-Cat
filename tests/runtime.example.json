@@ -1,0 +1,4 @@
+{
+  "playwrightModule": "C:/path/to/node_modules/playwright-core",
+  "chromiumPath": "C:/path/to/chrome.exe"
+}

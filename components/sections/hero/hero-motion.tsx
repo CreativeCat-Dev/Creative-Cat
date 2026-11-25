@@ -9,7 +9,7 @@ import gsap from "gsap";
  * doubles as the GSAP scope root: every entrance target sits inside it, so the
  * selectors below can never reach the navbar, the footer or the menu overlay.
  */
-const layout = "mx-auto flex w-full max-w-[1920px] flex-1 flex-col";
+const layout = "relative mx-auto flex w-full max-w-[1920px] flex-1 flex-col";
 
 /**
  * Module scope, evaluated once per document, after the browser has parsed the
@@ -20,7 +20,7 @@ const layout = "mx-auto flex w-full max-w-[1920px] flex-1 flex-col";
  * normally there instead of being judged against a much older paint.
  */
 const bootedWithServerHero =
-  typeof document !== "undefined" && Boolean(document.querySelector("[data-hero-media]"));
+  typeof document !== "undefined" && Boolean(document.querySelector("[data-hero-eyebrow]"));
 
 /** The gate is a property of the document's first load, so it runs at most once. */
 let entranceDecided = false;
@@ -45,9 +45,9 @@ const LATE_HYDRATION_BUDGET_MS = 200;
  * 2. There is no ScrollTrigger here. The hero is above the fold on every
  *    viewport, so this is a load choreography, not a scroll effect; the section
  *    never measures the document.
- * 3. The aperture wipe targets the frame box only. Nothing inside is animated,
- *    so replacing the placeholder with the real reel needs no choreography
- *    change.
+ * 3. The entrance covers type and rule only. The cat and the project cards are
+ *    static at this checkpoint; the scroll story will own them, so nothing here
+ *    needs to change when it arrives.
  * 4. The entrance is conditional on hydration speed. If the document hydrated
  *    more than 200ms after first paint, the visitor has already been reading
  *    the finished hero, so nothing is animated on that mount and the server
@@ -72,7 +72,6 @@ export function HeroMotion({ children }: { children: ReactNode }) {
       const lines = q("[data-hero-line]");
       const body = q("[data-hero-body]");
       const ctas = q("[data-hero-cta]");
-      const aperture = q("[data-hero-media]");
       const rule = q("[data-hero-rule]");
       const meta = q("[data-hero-meta]");
 
@@ -98,15 +97,6 @@ export function HeroMotion({ children }: { children: ReactNode }) {
 
         tl.fromTo(eyebrow, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.5 }, 0)
           .fromTo(lines, { yPercent: 105 }, { yPercent: 0, duration: 0.9, stagger: 0.085 }, 0.05)
-          .fromTo(
-            aperture,
-            // A wipe, not a zoom: the frame keeps its layout box the whole time
-            // and only its painted area is clipped, so the ratio can never
-            // deform mid-animation.
-            { clipPath: "inset(0% 0% 100% 0%)" },
-            { clipPath: "inset(0% 0% 0% 0%)", duration: 0.95, ease: "power2.inOut" },
-            0.2
-          )
           .fromTo(body, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.5 }, 0.55)
           .fromTo(
             ctas,
@@ -133,7 +123,6 @@ export function HeroMotion({ children }: { children: ReactNode }) {
         // of leaving anything at a from-state.
         gsap.set(eyebrow, { opacity: 1, y: 0 });
         gsap.set(lines, { yPercent: 0 });
-        gsap.set(aperture, { clipPath: "inset(0% 0% 0% 0%)" });
         gsap.set(body, { opacity: 1, y: 0 });
         gsap.set(ctas, { opacity: 1, y: 0 });
         gsap.set(rule, { scaleX: 1 });

@@ -51,3 +51,12 @@ skills-lock.json
 CLAUDE.md
 CREATIVE_CAT_ART_DIRECTION.md
 DEVELOPMENT_HISTORY.md
+
+# QA — generated output and private local tooling only
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
+/tests/.auth/
+/tests/.local/

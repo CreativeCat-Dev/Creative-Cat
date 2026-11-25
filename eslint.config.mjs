@@ -5,6 +5,15 @@ import nextTs from "eslint-config-next/typescript";
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
+  // Preserved hero QA scripts are plain Node CommonJS measurement tools, not
+  // application code. They are tracked, so only the CommonJS import rule is
+  // relaxed for them.
+  {
+    files: ["tests/**/*.js"],
+    rules: {
+      "@typescript-eslint/no-require-imports": "off",
+    },
+  },
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:
