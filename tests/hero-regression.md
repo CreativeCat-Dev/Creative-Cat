@@ -1,4 +1,4 @@
-# Hero regression register — 70 cases
+# Hero regression register — 70 hero cases + 6 delivery cases
 
 Last reconciled: 2026-11-25 (HERO-06C.2, delivery sprint).
 
@@ -163,8 +163,27 @@ is stated here rather than glossed over.
 | OP-02 | No diagnostic hooks, QA fixtures, secrets or temporary destinations in the build | `.next/static` scan + source scan: none | V |
 | OP-03 | Essential routes load (/, /work, /services, /about, /contact) with real content | Only `/` is built; the other four are placeholders | N |
 
-**Totals:** 58 currently verified, 10 historically passed, 1 deferred, 1 not yet
-tested, 0 failed. (Rows counted: 6+6+6+7+5+5+6+5+10+8+3+3 = 70.)
+## M. Global scroll chrome — DEL-00 / DEL-00.1 (6)
+
+Added after the hero freeze; these are delivery-sprint cases, not hero cases.
+All six are deferred to the consolidated pass, but each received a lightweight
+production check on 2026-11-25. DEL-00.1 changed the scrollbar palette from wine
+to coral and made every navbar surface opaque.
+
+| ID | Case | Evidence / script | Status |
+|---|---|---|---|
+| NL-01 | Navbar progress reads 0 at top, 0.5 at half and 1 at bottom, is 2px tall, sits on the navbar bottom edge and causes no layout shift | `e2e/scroll-chrome.js`: 0 / 0.5 / 1; bar 2px; bar bottom = nav bottom | D |
+| NL-02 | Progress updates after client route navigation, window resize and scroll restoration | same: `/contact` reads 0; Back restores y1500 → 0.339; resize re-measured | D |
+| NL-03 | Scrollbar thumb is coral `#FF1C43` idle and deeper coral `#D91438` while scrolling; hover `#FF4764`; dragging `#B01030`; native drag and keyboard remain | same: computed idle `rgb(255,28,67)`, active tween toward `rgb(217,20,56)`; hover pseudo `rgb(255,71,100)`; `:active` rule present; scrollbar never replaced | D |
+| NL-04 | Both themes, reduced motion and no-JS fallback | same: light/dark identical; reduced scale is exact; no-JS keeps the coral thumb and scale 0 | D |
+| NL-05 | Menu lock and mobile keep the effects correct; one Lenis, no new ScrollTrigger | same: menu progress unchanged, overflow hidden→visible; mobile 0.5; `lenis: 1`, triggers unchanged | D |
+| NL-06 | Navbar surfaces are fully opaque at page top, mid-scroll and hero exit, with correct foregrounds | same: `.nav-shell` computed `rgb(255,255,255)` light / `rgb(21,14,52)` dark; no content shows through the mid-scroll and mobile captures | D |
+
+**Totals:** 58 currently verified, 10 historically passed, 7 deferred, 1 not yet
+tested, 0 failed.
+
+- 70 hero rows: 6+6+6+7+5+5+6+5+10+8+3+3.
+- 6 delivery rows: NL-01…NL-06 (all deferred).
 
 ## Script → case manifest
 
@@ -186,6 +205,7 @@ tested, 0 failed. (Rows counted: 6+6+6+7+5+5+6+5+10+8+3+3 = 70.)
 | `responsive/hero-headline-candidates.js` | RS-02 | A/B/C line-width measurement. |
 | `responsive/hero-artwork-occlusion.js` | CO-07, RS-06 | GDRI vs cat silhouette. |
 | `responsive/hero-card-peek.js` | CO-06, CO-07 | Peek-percentage comparison. |
+| `e2e/scroll-chrome.js` | NL-01…NL-06 | DEL-00/00.1 navbar progress + branded scrollbar. |
 
 Cases without a preserved script (H rows and shell cases) were verified by the
 one-off probes in the temporary directory and by the HERO-06A/06B reports; they

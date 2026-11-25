@@ -8,6 +8,7 @@ import { MenuTrigger } from "@/components/navigation/menu-trigger";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { useHeaderSurface, type HeaderSurface } from "@/lib/use-header-surface";
 import { focusRing, microLabel } from "@/lib/ui";
+import { NavbarScroll } from "./navbar-scroll";
 
 const SURFACE_CLASS: Record<HeaderSurface, string> = {
   light: "nav-surface-light",
@@ -89,6 +90,7 @@ export function Navbar() {
           <MenuTrigger />
         </div>
       </div>
+      <NavbarScroll />
     </header>
   );
 }

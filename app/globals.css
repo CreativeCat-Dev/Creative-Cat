@@ -205,28 +205,37 @@ html[data-theme-transition="active"] *::after {
   transition: none !important;
 }
 
+/*
+ * DEL-00.1 — fully opaque navbar surfaces.
+ *
+ * Every surface paints a solid colour at rest and while scrolled, so page
+ * content can never show through the navigation. The section-aware contract is
+ * unchanged: `light` is paper, `dark` is midnight, `inherit` follows the theme
+ * background. Foregrounds keep their existing contrast pairs.
+ */
 .nav-surface-light {
   --nav-fg: var(--color-brand-midnight);
-  --nav-veil: rgb(21 14 52 / 0.04);
+  --nav-bg: #ffffff;
   --nav-line: rgb(21 14 52 / 0.1);
   color: var(--nav-fg);
 }
 
 .nav-surface-dark {
   --nav-fg: #ffffff;
-  --nav-veil: rgb(21 14 52 / 0.3);
+  --nav-bg: #150e34;
   --nav-line: rgb(255 255 255 / 0.14);
   color: var(--nav-fg);
 }
 
 .nav-surface-inherit {
   --nav-fg: var(--foreground);
-  --nav-veil: color-mix(in oklab, var(--nav-fg) 5%, transparent);
+  --nav-bg: var(--background);
   --nav-line: color-mix(in oklab, var(--nav-fg) 14%, transparent);
   color: var(--nav-fg);
 }
 
 .nav-shell {
+  background-color: var(--nav-bg);
   border-bottom: 1px solid transparent;
   transition:
     background-color 240ms cubic-bezier(0.2, 0, 0, 1),
@@ -235,7 +244,6 @@ html[data-theme-transition="active"] *::after {
 }
 
 .nav-shell[data-scrolled] {
-  background-color: var(--nav-veil);
   border-bottom-color: var(--nav-line);
 }
 
@@ -701,5 +709,67 @@ html[data-theme-transition="active"] *::after {
           max(0px, calc(12px - max(0px, 1rem - 16px) * 3))
         )
     );
+  }
+}
+
+/*
+ * DEL-00 / DEL-00.1 — branded native scrollbar.
+ *
+ * The scrollbar stays native: this only paints its thumb and track. The colour
+ * lives in `--cc-scrollbar-thumb`, which the navbar scroll controller tweens
+ * with GSAP (coral idle, deeper coral while scrolling). With no JavaScript the
+ * base rule still paints the branded coral thumb, so the fallback is static
+ * rather than absent. The track uses the theme background token, so it matches
+ * the default navbar surface in both themes.
+ *
+ * Firefox has no thumb radius or hover/active thumb styling, so it gets the
+ * branded coral at the platform's thin width. WebKit/Blink get a 12px track
+ * with a 2px transparent inset, which renders an 8px rounded thumb while
+ * keeping the native drag and keyboard behaviour. Mobile overlay scrollbars
+ * remain platform-native.
+ */
+@property --cc-scrollbar-thumb {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #ff1c43;
+}
+
+html {
+  --cc-scrollbar-thumb: #ff1c43;
+  --cc-scrollbar-track: var(--background);
+  scrollbar-width: thin;
+  scrollbar-color: var(--cc-scrollbar-thumb) var(--cc-scrollbar-track);
+}
+
+@supports selector(::-webkit-scrollbar) {
+  /* The pseudo-elements own the shape; the shorthand would suppress them. */
+  html {
+    scrollbar-width: auto;
+    scrollbar-color: auto;
+  }
+
+  html::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+
+  html::-webkit-scrollbar-track,
+  html::-webkit-scrollbar-corner {
+    background-color: var(--background);
+  }
+
+  html::-webkit-scrollbar-thumb {
+    background-color: var(--cc-scrollbar-thumb);
+    border: 2px solid transparent;
+    border-radius: 999px;
+    background-clip: padding-box;
+  }
+
+  html::-webkit-scrollbar-thumb:hover {
+    background-color: #ff4764;
+  }
+
+  html::-webkit-scrollbar-thumb:active {
+    background-color: #b01030;
   }
 }
