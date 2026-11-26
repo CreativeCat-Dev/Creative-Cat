@@ -5,7 +5,7 @@ survives the temporary directory. The hero is **frozen** (see
 `context/09_DECISIONS.md`, "Delivery sprint"), so these scripts are an archive and
 a future regression harness, not a per-change gate.
 
-- Register: [`hero-regression.md`](./hero-regression.md) — 70 hero cases plus 6
+- Register: [`hero-regression.md`](./hero-regression.md) — 70 hero cases plus 11
   delivery cases, statuses, and the script → case manifest.
 - Scripts: `e2e/`, `responsive/`, `accessibility/`, `performance/`.
 - Shared loader: `lib/playwright.js`, `lib/paths.js`.

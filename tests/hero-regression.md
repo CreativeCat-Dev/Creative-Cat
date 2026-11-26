@@ -1,6 +1,6 @@
-# Hero regression register — 70 hero cases + 6 delivery cases
+# Hero regression register — 70 hero cases + 11 delivery cases
 
-Last reconciled: 2026-11-25 (HERO-06C.2, delivery sprint).
+Last reconciled: 2026-11-26 (DEL-00.2C, delivery sprint).
 
 The owner-supplied 70-case handoff register was **not present** in the workspace,
 `%LOCALAPPDATA%/Temp/opencode/`, Desktop, Downloads or Documents. This register
@@ -163,12 +163,18 @@ is stated here rather than glossed over.
 | OP-02 | No diagnostic hooks, QA fixtures, secrets or temporary destinations in the build | `.next/static` scan + source scan: none | V |
 | OP-03 | Essential routes load (/, /work, /services, /about, /contact) with real content | Only `/` is built; the other four are placeholders | N |
 
-## M. Global scroll chrome — DEL-00 / DEL-00.1 (6)
+## M. Global scroll chrome + service ribbon (11)
 
 Added after the hero freeze; these are delivery-sprint cases, not hero cases.
-All six are deferred to the consolidated pass, but each received a lightweight
+All eleven are deferred to the consolidated pass, but each received a lightweight
 production check on 2026-11-25. DEL-00.1 changed the scrollbar palette from wine
-to coral and made every navbar surface opaque.
+to coral and made every navbar surface opaque; DEL-00.2 replaced the hero's
+SCROLL / 13 PROJECTS labels with the kinetic service ribbon; DEL-00.2A thickened
+the bands, lengthened the opposing waves, added the knockout crossing, restored
+the cat clearance; DEL-00.2B widened the peak separation and moved the pause
+control into the site menu; DEL-00.2C mirrored the waves, thinned the band, made
+the type responsive, replaced the unsigned bump with a signed spring and
+confirmed the hover "spacing" was not typographic.
 
 | ID | Case | Evidence / script | Status |
 |---|---|---|---|
@@ -178,12 +184,17 @@ to coral and made every navbar surface opaque.
 | NL-04 | Both themes, reduced motion and no-JS fallback | same: light/dark identical; reduced scale is exact; no-JS keeps the coral thumb and scale 0 | D |
 | NL-05 | Menu lock and mobile keep the effects correct; one Lenis, no new ScrollTrigger | same: menu progress unchanged, overflow hidden→visible; mobile 0.5; `lenis: 1`, triggers unchanged | D |
 | NL-06 | Navbar surfaces are fully opaque at page top, mid-scroll and hero exit, with correct foregrounds | same: `.nav-shell` computed `rgb(255,255,255)` light / `rgb(21,14,52)` dark; no content shows through the mid-scroll and mobile captures | D |
+| NL-07 | Seven service labels render once in the accessible list; all SVG text is decorative; star separators use the smaller tspan | `e2e/service-ribbon.js`: 7 list items, two aria-hidden text paths, 35 star tspans per path, labels/state in one `ul` | D |
+| NL-08 | Two text paths move in opposite directions; the measured loop reset has no gap, duplicate spacing or visible jump | same: offsets diverge; unit measured at 849.8 units at 1440 (responsive to the CSS type size), 1107.9 at 1024×600; offset 0 and offset L captures are visually indistinguishable, with a sub-unit residual from the curved path | D |
+| NL-09 | Hover slows the ribbon to about 0.35 timeScale; pointer deformation is signed, localized and per-ribbon; the coral passes over the midnight with a clean knockout; recovery is elastic and typography never animates | same: 20.94 units/600ms normal vs 7.34 hovered; at x=960 coral 29.8 → 27.8 above / 31.6 below, midnight 8.2 → 6.62 / 9.78; exact recovery; `letter-spacing` 0.988px and `textLength` 5102.472 unchanged, glyph gaps <0.001 units; shine 0.5/0.38 → 0 | D |
+| NL-10 | The overlay pause button is gone; the menu motion switch pauses/resumes the same timeline, is keyboard operable, correctly stateful, hidden under reduced motion, and also suspends pointer deformation | same: `role="switch"` with `aria-checked`; pause freezes offsets and leaves both bands at baseline after a pointer move; resume advances; 44px min-height; `display:none` under reduced motion; absent from the no-JS document | D |
+| NL-11 | Mirrored waves, responsive type and the height budget preserve the rule, cat and fit: 68px@1440, 34px@1024×600, 52px@834, 46px@390; band 22.2px and type 13.6px with a ≈16.5px peak gap at 1440; type 8.9px at 1024; the cat stays 1px above the rule | same: band 12.4 units (22.2px@1440 / 11.1px@1024); peak gap 16.46px@1440, 8.23px@1024, 12.58px@834, 11.14px@390; peak lobe centred at x=960; rule 818.5 / 558.5 unchanged; cat gap 1px at every enhanced desktop; 1024×600 enhanced with required 587.56; no overflow | D |
 
-**Totals:** 58 currently verified, 10 historically passed, 7 deferred, 1 not yet
+**Totals:** 58 currently verified, 10 historically passed, 12 deferred, 1 not yet
 tested, 0 failed.
 
 - 70 hero rows: 6+6+6+7+5+5+6+5+10+8+3+3.
-- 6 delivery rows: NL-01…NL-06 (all deferred).
+- 11 delivery rows: NL-01…NL-11 (all deferred).
 
 ## Script → case manifest
 
@@ -206,6 +217,7 @@ tested, 0 failed.
 | `responsive/hero-artwork-occlusion.js` | CO-07, RS-06 | GDRI vs cat silhouette. |
 | `responsive/hero-card-peek.js` | CO-06, CO-07 | Peek-percentage comparison. |
 | `e2e/scroll-chrome.js` | NL-01…NL-06 | DEL-00/00.1 navbar progress + branded scrollbar. |
+| `e2e/service-ribbon.js` | NL-07…NL-11 | DEL-00.2/00.2A/00.2B/00.2C placement, mirrored separation, responsive type, signed pointer deformation, loop, menu switch and fallbacks. |
 
 Cases without a preserved script (H rows and shell cases) were verified by the
 one-off probes in the temporary directory and by the HERO-06A/06B reports; they

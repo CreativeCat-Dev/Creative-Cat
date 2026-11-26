@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useGSAP } from "@gsap/react";
@@ -10,6 +10,12 @@ import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { NAV_ITEMS, isActivePath } from "@/lib/navigation";
 import { lockScroll } from "@/lib/scroll-lock";
 import { focusRing, microLabel } from "@/lib/ui";
+import {
+  getRibbonMotionAvailable,
+  getRibbonMotionPaused,
+  subscribeRibbonMotion,
+  toggleRibbonMotion,
+} from "@/lib/ribbon-motion";
 
 type MenuOverlayProps = {
   open: boolean;
@@ -42,6 +48,16 @@ export function MenuOverlay({ open, onClose, onNavigate, onClosed }: MenuOverlay
   const callbacks = useRef({ onClose, onClosed });
   const returnFocusRef = useRef<HTMLElement | null>(null);
   const pathname = usePathname();
+  const ribbonPaused = useSyncExternalStore(
+    subscribeRibbonMotion,
+    getRibbonMotionPaused,
+    () => false,
+  );
+  const ribbonAvailable = useSyncExternalStore(
+    subscribeRibbonMotion,
+    getRibbonMotionAvailable,
+    () => false,
+  );
   /**
    * Set by the fine-pointer motion branch. Closing the overlay calls it so a
    * reopened menu never inherits a frozen phase from the previous hover.
@@ -430,7 +446,28 @@ export function MenuOverlay({ open, onClose, onNavigate, onClosed }: MenuOverlay
             Let&apos;s create something
           </Link>
 
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            {ribbonAvailable ? (
+              <button
+                type="button"
+                role="switch"
+                aria-checked={!ribbonPaused}
+                aria-label="Service ribbon motion"
+                onClick={toggleRibbonMotion}
+                className={`inline-flex min-h-11 items-center gap-2 rounded-full px-1 text-muted-foreground transition-colors hover:text-primary motion-reduce:hidden ${microLabel} ${focusRing}`}
+              >
+                <span
+                  aria-hidden
+                  className={`size-1.5 rounded-full ${
+                    ribbonPaused ? "bg-muted-foreground/40" : "bg-primary"
+                  }`}
+                />
+                <span aria-hidden>Ribbon motion</span>
+                <span aria-hidden className="text-muted-foreground/60">
+                  {ribbonPaused ? "Paused" : "On"}
+                </span>
+              </button>
+            ) : null}
             <span className={`hidden text-muted-foreground md:block ${microLabel}`}>
               Independent Creative Studio
             </span>

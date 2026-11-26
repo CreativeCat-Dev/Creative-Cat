@@ -693,10 +693,87 @@ html[data-theme-transition="active"] *::after {
  * (CTA-to-rule 180px at 1024x768, 92px at 1024x600), so the extra is counted by
  * the same fit contract and cannot demote an enhanced composition.
  */
+/*
+ * DEL-00.2 — service ribbon footprint.
+ *
+ * The ribbon keeps the metadata hook and the rule exactly where they were. It
+ * grows downward into the existing bottom padding instead of pushing the rule
+ * up: the desktop rule below subtracts `(ribbon height - 32.5px)` from the
+ * padding, so `meta + padding-bottom` is unchanged and the content-fit
+ * controller sees the same required height. Mobile and tablet are static and
+ * simply grow the document.
+ */
+[data-hero-stage] {
+  --hero-ribbon-h: 46px;
+}
+
+@media (min-width: 768px) and (max-width: 1023.98px) {
+  [data-hero-stage] {
+    --hero-ribbon-h: 52px;
+  }
+}
+
+@media (min-width: 1024px) {
+  [data-hero-stage] {
+    --hero-ribbon-h: 56px;
+  }
+}
+
+[data-hero-meta] {
+  height: var(--hero-ribbon-h);
+}
+
+/*
+ * DEL-00.2C — responsive ribbon type.
+ *
+ * Sizes are in SVG user units, so the `slice` scale applies. One fixed size
+ * cannot work: the same 12.4-unit band is 22px tall at 1440 but 11px at
+ * 1024x600, and a size that looks right in the spacious strip would be ~6.8px
+ * of text in the short one. The spacious desktop therefore keeps the type small
+ * relative to the band (≈13.6px rendered, 20% of the strip), while short
+ * desktop, tablet and mobile keep a readable rendered size by using a larger
+ * unit size. Tracking is `em`-based in the SVG, so it scales with both.
+ */
+[data-service-ribbon] text {
+  font-size: 7.6px;
+}
+
+@media (min-width: 1024px) {
+  [data-service-ribbon] text {
+    font-size: max(7.6px, calc(7.6px + (900px - 100svh) * 0.0077));
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023.98px) {
+  [data-service-ribbon] text {
+    font-size: 8.2px;
+  }
+}
+
+@media (max-width: 767.98px) {
+  [data-service-ribbon] text {
+    font-size: 8.9px;
+  }
+}
+
+/*
+ * DEL-00.2A — keep the absolute desktop art where the rule expects it.
+ *
+ * The art layer is inset 60px from the bottom of the lane, and the cat hangs a
+ * further 25.5px below it. Growing the metadata row for the ribbon therefore
+ * grew the lane and pushed the cat down into the rule. Subtracting the ribbon's
+ * extra height restores the accepted pre-ribbon position: the cat's lowest
+ * pixel stays 1px above the rule at every supported desktop height, without
+ * resizing or re-centring it.
+ */
+[data-hero-stage] [data-hero-desktop] {
+  bottom: calc(60px + var(--hero-ribbon-h) - 32.5px);
+}
+
 @media (min-width: 1024px) and (min-height: 600px) and (prefers-reduced-motion: no-preference) {
   [data-hero-stage] {
+    --hero-ribbon-h: clamp(34px, calc(11.3333svh - 34px), 68px);
     padding-top: clamp(117px, calc(40.2985svh - 124.791px), 144px);
-    padding-bottom: clamp(8px, calc(59.7015svh - 350.209px), 48px);
   }
 
   [data-hero-copy] {
@@ -708,6 +785,24 @@ html[data-theme-transition="active"] *::after {
           clamp(0px, calc((960px - 100svh) * 0.2), 12px),
           max(0px, calc(12px - max(0px, 1rem - 16px) * 3))
         )
+    );
+  }
+}
+
+/*
+ * The ribbon height is paid for by the bottom padding: `meta + padding-bottom`
+ * stays constant, so the rule, cat and corridor do not move. This also covers
+ * the static / reduced-motion desktop fallback, where the taller ribbon would
+ * otherwise push the rule up into the cat.
+ */
+@media (min-width: 1024px) and (min-height: 600px) {
+  [data-hero-stage] {
+    padding-bottom: max(
+      4px,
+      calc(
+        clamp(8px, calc(59.7015svh - 350.209px), 48px) -
+          (var(--hero-ribbon-h) - 32.5px)
+      )
     );
   }
 }

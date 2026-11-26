@@ -8,6 +8,7 @@ import { HeroCorridor } from "./hero-corridor";
 import { HeroFeaturedMeta } from "./hero-featured-meta";
 import { HeroMotion } from "./hero-motion";
 import { HeroStory } from "./hero-story";
+import { ServiceRibbon } from "@/components/sections/service-ribbon/service-ribbon";
 import { CAT_SOURCE } from "./hero.cat";
 import {
   HERO_BODY,
@@ -187,25 +188,8 @@ export function Hero() {
             </div>
 
             <hr data-hero-rule className="mt-5 border-border hero-lg:mt-auto" />
-            <div
-              data-hero-meta
-              className="flex flex-wrap items-center justify-between gap-3 pt-3 hero-lg:pt-4"
-            >
-              <p className={`flex items-center gap-2 text-muted-foreground ${microLabel}`}>
-                Scroll
-                <svg viewBox="0 0 10 10" aria-hidden className="size-2.5">
-                  <path
-                    d="M5 1v8M1.5 5.5 5 9l3.5-3.5"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.4"
-                    strokeLinecap="square"
-                  />
-                </svg>
-              </p>
-              <p className={`text-muted-foreground ${microLabel}`}>
-                {WORK_PROJECT_COUNT} projects
-              </p>
+            <div data-hero-meta className="relative">
+              <ServiceRibbon />
             </div>
           </div>
         </HeroMotion>
