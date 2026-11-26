@@ -105,13 +105,16 @@ const READ = () => {
     loop: ribbon?.getAttribute("data-ribbon-loop") ?? null,
     services: document.querySelectorAll("[data-service-ribbon] ul li").length,
     viewBox: svg?.getAttribute("viewBox"),
-    type: text
+    type: text && ribbonBox
       ? {
           fontSize: getComputedStyle(text).fontSize,
+          renderedFontPx: R((parseFloat(getComputedStyle(text).fontSize) * ribbonBox.height) / 38),
+          fontWeight: getComputedStyle(text).fontWeight,
           letterSpacing: getComputedStyle(text).letterSpacing,
         }
       : null,
     bandStroke: coralBand?.getAttribute("stroke-width") ?? null,
+    bandPx: coralBand && ribbonBox ? R((Number(coralBand.getAttribute("stroke-width")) * ribbonBox.height) / 38) : null,
     peakGap,
     offsets: [...document.querySelectorAll("[data-service-ribbon] textPath")].map((tp) => +(tp.getAttribute("startOffset") || 0)),
     tspans: document.querySelectorAll("[data-service-ribbon] textPath tspan").length,

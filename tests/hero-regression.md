@@ -172,9 +172,12 @@ to coral and made every navbar surface opaque; DEL-00.2 replaced the hero's
 SCROLL / 13 PROJECTS labels with the kinetic service ribbon; DEL-00.2A thickened
 the bands, lengthened the opposing waves, added the knockout crossing, restored
 the cat clearance; DEL-00.2B widened the peak separation and moved the pause
-control into the site menu; DEL-00.2C mirrored the waves, thinned the band, made
-the type responsive, replaced the unsigned bump with a signed spring and
-confirmed the hover "spacing" was not typographic.
+control into the site menu; DEL-00.2C mirrored the waves, made the type
+responsive, replaced the unsigned bump with a signed spring and confirmed the
+hover "spacing" was not typographic; DEL-00.2D thinned both bands to 19px,
+reduced the desktop type to 11.5px/500, centred the glyphs and gave the recovered
+thickness to separation; DEL-00.2E replaced those desktop dimensions with the
+owner-selected 25px band / 10.5px type / 20px gap inside a 76px strip.
 
 | ID | Case | Evidence / script | Status |
 |---|---|---|---|
@@ -185,10 +188,10 @@ confirmed the hover "spacing" was not typographic.
 | NL-05 | Menu lock and mobile keep the effects correct; one Lenis, no new ScrollTrigger | same: menu progress unchanged, overflow hidden→visible; mobile 0.5; `lenis: 1`, triggers unchanged | D |
 | NL-06 | Navbar surfaces are fully opaque at page top, mid-scroll and hero exit, with correct foregrounds | same: `.nav-shell` computed `rgb(255,255,255)` light / `rgb(21,14,52)` dark; no content shows through the mid-scroll and mobile captures | D |
 | NL-07 | Seven service labels render once in the accessible list; all SVG text is decorative; star separators use the smaller tspan | `e2e/service-ribbon.js`: 7 list items, two aria-hidden text paths, 35 star tspans per path, labels/state in one `ul` | D |
-| NL-08 | Two text paths move in opposite directions; the measured loop reset has no gap, duplicate spacing or visible jump | same: offsets diverge; unit measured at 849.8 units at 1440 (responsive to the CSS type size), 1107.9 at 1024×600; offset 0 and offset L captures are visually indistinguishable, with a sub-unit residual from the curved path | D |
-| NL-09 | Hover slows the ribbon to about 0.35 timeScale; pointer deformation is signed, localized and per-ribbon; the coral passes over the midnight with a clean knockout; recovery is elastic and typography never animates | same: 20.94 units/600ms normal vs 7.34 hovered; at x=960 coral 29.8 → 27.8 above / 31.6 below, midnight 8.2 → 6.62 / 9.78; exact recovery; `letter-spacing` 0.988px and `textLength` 5102.472 unchanged, glyph gaps <0.001 units; shine 0.5/0.38 → 0 | D |
+| NL-08 | Two text paths move in opposite directions; the measured loop reset has no gap, duplicate spacing or visible jump | same: offsets diverge; unit measured at 574.7 units at 1440 (984.9 at 1024×600, 973.9 at 390), responsive to the CSS type size; offset 0 and offset L captures differ by the known sub-unit residual (~1px edge alignment) from the curved path | D |
+| NL-09 | Hover slows the ribbon to about 0.35 timeScale; pointer deformation is signed, localized and per-ribbon; the coral passes over the midnight with a clean knockout; recovery is elastic and typography never animates | same: 20.94 units/600ms normal vs 7.34 hovered; at x=960 coral 30.25 → 28.22 above / 31.55 below, midnight 7.75 → 6.47 / 9.35; the bump spends the available headroom near the wave extremes so it never clips; exact recovery; `letter-spacing` 0.63px and `textLength` 4026.75 unchanged, glyph gaps <0.001 units, path length +0.16; shine 0.5/0.38 → 0 | D |
 | NL-10 | The overlay pause button is gone; the menu motion switch pauses/resumes the same timeline, is keyboard operable, correctly stateful, hidden under reduced motion, and also suspends pointer deformation | same: `role="switch"` with `aria-checked`; pause freezes offsets and leaves both bands at baseline after a pointer move; resume advances; 44px min-height; `display:none` under reduced motion; absent from the no-JS document | D |
-| NL-11 | Mirrored waves, responsive type and the height budget preserve the rule, cat and fit: 68px@1440, 34px@1024×600, 52px@834, 46px@390; band 22.2px and type 13.6px with a ≈16.5px peak gap at 1440; type 8.9px at 1024; the cat stays 1px above the rule | same: band 12.4 units (22.2px@1440 / 11.1px@1024); peak gap 16.46px@1440, 8.23px@1024, 12.58px@834, 11.14px@390; peak lobe centred at x=960; rule 818.5 / 558.5 unchanged; cat gap 1px at every enhanced desktop; 1024×600 enhanced with required 587.56; no overflow | D |
+| NL-11 | Owner-selected proportions and the height budget preserve the rule, cat and fit: 76px@1440, 34px@1024×600, 52px@834, 46px@390; band 25px, type 10.5px/500, ≈20px peak gap at 1440; ≈9px of measured cap clearance each side; the cat stays 1px above the rule | same: 76px strip keeps `meta + padding` at 80.5px (padding 4.5px), rule 818.5; band 12.5 units = 25px@1440 / 11.18px@1024 / 17.11px@834 / 15.13px@390; type 5.25 units = 10.5px@1440 / 8.05px@1024 / 11.22px@834 / 10.77px@390; peak gap 19.99px@1440, 8.94px@1024, 13.67px@834, 12.11px@390; measured ink above/below 9.3/8.5px@1440, 2.6/2.9px@1024, 3.5/4.2px@390; mask channel 14.5 units; cat gap 1px; 1024×600 enhanced with required 587.56; no overflow | D |
 
 **Totals:** 58 currently verified, 10 historically passed, 12 deferred, 1 not yet
 tested, 0 failed.
@@ -217,7 +220,7 @@ tested, 0 failed.
 | `responsive/hero-artwork-occlusion.js` | CO-07, RS-06 | GDRI vs cat silhouette. |
 | `responsive/hero-card-peek.js` | CO-06, CO-07 | Peek-percentage comparison. |
 | `e2e/scroll-chrome.js` | NL-01…NL-06 | DEL-00/00.1 navbar progress + branded scrollbar. |
-| `e2e/service-ribbon.js` | NL-07…NL-11 | DEL-00.2/00.2A/00.2B/00.2C placement, mirrored separation, responsive type, signed pointer deformation, loop, menu switch and fallbacks. |
+| `e2e/service-ribbon.js` | NL-07…NL-11 | DEL-00.2/00.2A/00.2B/00.2C/00.2D/00.2E placement, band/type proportions, mirrored separation, signed pointer deformation, loop, menu switch and fallbacks. |
 
 Cases without a preserved script (H rows and shell cases) were verified by the
 one-off probes in the temporary directory and by the HERO-06A/06B reports; they

@@ -47,11 +47,22 @@ export function wavePoints(
 
   for (let index = 0; index <= count; index += 1) {
     const x = from + actualStep * index;
-    let y = spec.baseY + Math.sin((x / spec.period) * Math.PI * 2 + spec.phase) * spec.amplitude;
+    const baseY =
+      spec.baseY + Math.sin((x / spec.period) * Math.PI * 2 + spec.phase) * spec.amplitude;
+    let y = baseY;
 
     if (bump && bump.amplitude !== 0) {
       const distance = (x - bump.x) / bump.sigma;
-      y += bump.amplitude * Math.exp(-distance * distance);
+      /**
+       * DEL-00.2E: the 25px band sits close to the strip edge at the wave
+       * extremes, so a full-strength bump there would clip. Spend only the
+       * headroom left between the base wave and the bounds; the deformation is
+       * therefore at full strength mid-strip and compresses smoothly toward the
+       * extremes. The final clamp stays as a safety net.
+       */
+      const headroom = bump.amplitude < 0 ? baseY - bounds.min : bounds.max - baseY;
+      const limit = headroom <= 0 ? 0 : Math.min(1, headroom / Math.abs(bump.amplitude));
+      y = baseY + bump.amplitude * Math.exp(-distance * distance) * limit;
     }
 
     points.push({ x, y: clamp(y, bounds.min, bounds.max) });

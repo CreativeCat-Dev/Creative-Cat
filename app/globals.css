@@ -724,23 +724,22 @@ html[data-theme-transition="active"] *::after {
 }
 
 /*
- * DEL-00.2C — responsive ribbon type.
+ * DEL-00.2C / DEL-00.2D / DEL-00.2E — responsive ribbon type.
  *
- * Sizes are in SVG user units, so the `slice` scale applies. One fixed size
- * cannot work: the same 12.4-unit band is 22px tall at 1440 but 11px at
- * 1024x600, and a size that looks right in the spacious strip would be ~6.8px
- * of text in the short one. The spacious desktop therefore keeps the type small
- * relative to the band (≈13.6px rendered, 20% of the strip), while short
- * desktop, tablet and mobile keep a readable rendered size by using a larger
- * unit size. Tracking is `em`-based in the SVG, so it scales with both.
+ * Sizes are in SVG user units, so the `slice` scale applies. The spacious strip
+ * is 76px for the 38-unit viewBox (2.0 scale), so 5.25 units is the owner's
+ * 10.5px and 12.5 units is the 25px band. One fixed user-unit size cannot work:
+ * that 5.25 units would be 4.7px in the 34px short-desktop strip. The desktop
+ * therefore ramps the type up as the strip shortens (9 units at 1024x600), while
+ * tablet and mobile use their own readable sizes. Tracking stays `em`-based.
  */
 [data-service-ribbon] text {
-  font-size: 7.6px;
+  font-size: 5.25px;
 }
 
 @media (min-width: 1024px) {
   [data-service-ribbon] text {
-    font-size: max(7.6px, calc(7.6px + (900px - 100svh) * 0.0077));
+    font-size: max(5.25px, calc(5.25px + (900px - 100svh) * 0.0125));
   }
 }
 
@@ -772,7 +771,13 @@ html[data-theme-transition="active"] *::after {
 
 @media (min-width: 1024px) and (min-height: 600px) and (prefers-reduced-motion: no-preference) {
   [data-hero-stage] {
-    --hero-ribbon-h: clamp(34px, calc(11.3333svh - 34px), 68px);
+    /*
+     * DEL-00.2E: the owner-selected resting composition is 25px band + 20px gap
+     * + 25px band = 70px, so the spacious strip grows 68 → 76px. The ramp keeps
+     * 34px at 1024x600 and reaches 76px at 900px; the bottom padding below
+     * subtracts the extra height, so `meta + padding` and the rule do not move.
+     */
+    --hero-ribbon-h: clamp(34px, calc(14svh - 50px), 76px);
     padding-top: clamp(117px, calc(40.2985svh - 124.791px), 144px);
   }
 

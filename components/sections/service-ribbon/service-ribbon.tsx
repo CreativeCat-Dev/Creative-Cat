@@ -47,13 +47,29 @@ import {
 const VIEW_W = 1920;
 const VIEW_H = 38;
 /**
- * DEL-00.2C: the band is thinner so the same 68px strip can hold ≈16px of clear
- * space at the peaks while the typography stays smaller than the band.
+ * DEL-00.2E owner-selected spacious-desktop proportions.
+ *
+ * The desktop strip is 76px for a 38-unit viewBox, so the rendered scale is
+ * exactly 2.0. The owner's CSS-pixel targets therefore convert as:
+ *   band 25px / 2.0 = 12.5 units
+ *   type 10.5px / 2.0 = 5.25 units (ratio 42% of the band)
+ *   clear gap 20px / 2.0 = 10 units
+ * The gap comes from the mirrored pair, so 2 × amplitude − band = 10 units and
+ * each wave amplitude is 11.25. Short desktop/tablet/mobile keep the same band
+ * in user units, which scales down with the strip instead of applying 25px there.
  */
-const BAND_WIDTH = 12.4;
-const FONT_SIZE = 7.6;
+const BAND_WIDTH = 12.5;
+const FONT_SIZE = 5.25;
 /** Relative tracking, so it scales with the responsive font size in CSS. */
-const LETTER_SPACING = "0.13em";
+const LETTER_SPACING = "0.12em";
+/** Montserrat 500: lighter at 11.5px than 600, without losing legibility. */
+const FONT_WEIGHT = 500;
+/**
+ * `dominant-baseline: middle` centres the font box, but measured cap ink sits
+ * high. The nudge is proportional to the type, so it is recalculated for the
+ * 5.25-unit font and re-measured against the rendered band at 2x.
+ */
+const BASELINE_NUDGE = 0.37;
 /** Calm, premium drift: ≈61px/s at 1440×900. */
 const SPEED = 34;
 const DEFAULT_LOOP = 1200;
@@ -83,18 +99,18 @@ const EDGE_BOUNDS: WaveBounds = { min: 0.4, max: VIEW_H - 0.4 };
  * Mirrored waves: one period, opposite phase, peak separation centred on the
  * viewBox. `cos` peaks at x = 0, 960, 1920, so the centred lobe of the 1440
  * crop is the top/bottom extreme and both visible crossings (x 720 / 1200) are
- * symmetric about it. The 2x amplitude (21.6 units) minus the 12.4-unit band
- * leaves a 9.2-unit clear gap — ≈16.5px at the 68px spacious desktop.
+ * symmetric about it. 2 × 11.25 − 12.5 = 10 units of clear gap, which is the
+ * owner's 20px at the 76px strip (2.0 scale).
  */
 const CORAL: WaveSpec = {
   baseY: 19,
-  amplitude: 10.8,
+  amplitude: 11.25,
   period: 960,
   phase: Math.PI / 2,
 };
 const MIDNIGHT: WaveSpec = {
   baseY: 19,
-  amplitude: 10.8,
+  amplitude: 11.25,
   period: 960,
   phase: -Math.PI / 2,
 };
@@ -625,7 +641,7 @@ export function ServiceRibbon() {
               d={DEFAULT_CORAL_BAND}
               fill="none"
               stroke="black"
-              strokeWidth={BAND_WIDTH + 2.4}
+              strokeWidth={BAND_WIDTH + 2}
             />
           </mask>
         </defs>
@@ -681,9 +697,10 @@ export function ServiceRibbon() {
           <text
             className="fill-white font-sans"
             fontSize={FONT_SIZE}
-            fontWeight={600}
+            fontWeight={FONT_WEIGHT}
             letterSpacing={LETTER_SPACING}
             dominantBaseline="middle"
+            dy={BASELINE_NUDGE}
             xmlSpace="preserve"
           >
             <textPath
@@ -745,12 +762,13 @@ export function ServiceRibbon() {
         <text
           className="fill-white font-sans"
           fontSize={FONT_SIZE}
-          fontWeight={600}
+          fontWeight={FONT_WEIGHT}
           letterSpacing={LETTER_SPACING}
           dominantBaseline="middle"
+          dy={BASELINE_NUDGE}
           paintOrder="stroke"
-          stroke="rgb(52 6 22 / 0.32)"
-          strokeWidth={0.26}
+          stroke="rgb(52 6 22 / 0.3)"
+          strokeWidth={0.22}
           xmlSpace="preserve"
         >
           <textPath
