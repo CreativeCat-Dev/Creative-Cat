@@ -1,6 +1,6 @@
-# Hero regression register — 70 hero cases + 11 delivery cases
+# Hero regression register — 70 hero cases + 21 delivery cases
 
-Last reconciled: 2026-11-26 (DEL-00.2C, delivery sprint).
+Last reconciled: 2026-11-27 (DEL-00.3C, delivery sprint).
 
 The owner-supplied 70-case handoff register was **not present** in the workspace,
 `%LOCALAPPDATA%/Temp/opencode/`, Desktop, Downloads or Documents. This register
@@ -193,11 +193,34 @@ owner-selected 25px band / 10.5px type / 20px gap inside a 76px strip.
 | NL-10 | The overlay pause button is gone; the menu motion switch pauses/resumes the same timeline, is keyboard operable, correctly stateful, hidden under reduced motion, and also suspends pointer deformation | same: `role="switch"` with `aria-checked`; pause freezes offsets and leaves both bands at baseline after a pointer move; resume advances; 44px min-height; `display:none` under reduced motion; absent from the no-JS document | D |
 | NL-11 | Owner-selected proportions and the height budget preserve the rule, cat and fit: 76px@1440, 34px@1024×600, 52px@834, 46px@390; band 25px, type 10.5px/500, ≈20px peak gap at 1440; ≈9px of measured cap clearance each side; the cat stays 1px above the rule | same: 76px strip keeps `meta + padding` at 80.5px (padding 4.5px), rule 818.5; band 12.5 units = 25px@1440 / 11.18px@1024 / 17.11px@834 / 15.13px@390; type 5.25 units = 10.5px@1440 / 8.05px@1024 / 11.22px@834 / 10.77px@390; peak gap 19.99px@1440, 8.94px@1024, 13.67px@834, 12.11px@390; measured ink above/below 9.3/8.5px@1440, 2.6/2.9px@1024, 3.5/4.2px@390; mask channel 14.5 units; cat gap 1px; 1024×600 enhanced with required 587.56; no overflow | D |
 
-**Totals:** 58 currently verified, 10 historically passed, 12 deferred, 1 not yet
+## N. Next Level Projects masthead + video aperture (10)
+
+DEL-00.3C keeps the DEL-00.3B kinetic masthead and Animata aperture and replaces
+the four-image slideshow with one persistent Creative Cat video. The section is
+still mounted directly after the hero until Capabilities and Selected Work exist.
+`e2e/project-aperture.js` was updated for video playback and continuity and passes
+on dev (:3000) and production (:3100) with 0 failures on 2026-11-27; the cases
+remain **D** under the delivery-sprint policy because the consolidated hero matrix
+is not being rerun for this change.
+
+| ID | Case | Evidence / script | Status |
+|---|---|---|---|
+| NLP-01 | The section is one 190svh runway with one native sticky 100svh stage in enhanced mode; it adds exactly one section-local ScrollTrigger, keeps the hero trigger at 1, has no GSAP pin, no second Lenis, no extra RAF loop and exactly one video element; static/reduced/no-JS add no runway | `e2e/project-aperture.js`: 1440×900 section 1710, one sticky descendant, trigger 1, hero 1, Lenis 1; 1024×600 section 1140; 834×1194 section 914.1, 390×844 512.8 with 0 sticky and 0 triggers; one `<video>` per page; no legacy `[data-aperture-*]` parts | D |
+| NLP-02 | Typography uses 0.01em positive tracking and a 14.1vw base; NEXT and LEVEL are separate fragments with a 0.16em gap; both rows are width-matched after font readiness without negative tracking, scaling or glyph compression; the CSS no-JS fallback is 0.933em | same: 1440 rows 1353.4/1353.4, top font 209.63px, bottom 195.63px, tracking 2.10px; 1024 rows 962.6/962.6; 390 rows 361.9/362.2; no-JS 1440 1311.5/1311, 390 355.2/355, 320 291.4/291.3; capsule clearance >4px each side | D |
+| NLP-03 | NEXT LEVEL enters from the left and PROJECTS from the right with the demo's 30vw / `(1-p)^2` relationship; both settle, remain visible and reverse exactly; the complete masthead holds with the moving video capsule before the aperture | same: p0 ±432px at 1440, p15 ±108px, p31 0; both opacities 1 at rest; reverse restores 0; 1024 starts ±307.2px; capsule 371.7×148.7 unchanged through the entrance; the 0.31–0.418 hold shows the live capsule video | D |
+| NLP-04 | The aperture starts from the actual measured capsule slider rectangle: clip insets and radius match the slider within 1.2px at rest, the clip grows from that rectangle, the radius releases, the ring fades and the shared full-stage media is revealed with no second crop or blank frame | same: 1440 rest clip `inset(499.77 762.34 295.33 349.75 round 52.45)` = slider 327.91×104.89; p60 clip 1269×511, radius 25.7; p85 clip `inset(0px)`; ring opacity 1→0; 1024 rest/full clip also matches; the video covers the rest rect and is within 0.2% of the full stage | D |
+| NLP-05 | One persistent muted, looping, inline video is the entire showreel: its source is deferred until the section approaches the viewport, the poster covers the first frame, and the same DOM node plays through entrance, capsule, expansion, full stage and reverse with no clone, no second decoder, no seek, no restart and no scroll-driven `currentTime` | same: `video` count 1 at every state; `src: null` at page load, then `/video/creative-cat-showreel.mp4`; `poster` `/video/creative-cat-showreel-poster.webp`; muted/loop/playsInline true; node marker survives p40→p50→p60→p95; currentTime advances 2.75 → 5.5 across the aperture and 7.96 → loop on the full stage; reverse continues and never returns to 0; rapid scroll is monotonic apart from the loop wrap | D |
+| NLP-06 | Headline fragments part and fade as the media opens; the stable portfolio caption then reads in word by word with a scrim, describing the studio rather than any project or verified client work; the accessible sentence is separate from the decorative words | same: at p60 PR/JECTS spread ±361px, NEXT/LEVEL ±124px, fragment opacities 0.03; caption opacity 0 at p60, 1 at p85–p100, q 0.34→1, three word opacities reveal progressively, scrim 0.23→1; caption is "01 / The Creative Cat Showreel", "Creativity in motion.", "Strategy. Design. Technology. Motion."; accessible line exact; no old project names | D |
+| NLP-07 | The pointer lens remains an exact coral inversion of the aligned masthead, never clones the video or opens a second decoder, hides when the pointer enters the video capsule, and is disabled during the aperture; it returns only when the masthead is restored | same: 120px `rgb(255, 28, 67)`, clone delta 0.19px, inverted poster, `0` cloned videos, `pointer-events:none`, `aria-hidden`; visible over letters, hidden over the capsule, hidden after wheel/leave, hidden at p60, visible again at p31 reverse | D |
+| NLP-08 | The showreel pauses offscreen, document-hidden, on route unmount and through the Showreel motion menu switch; the preference survives expansion and contraction; the playback position is preserved and the video never pauses because the aperture is travelling | same: menu switch `role="switch"` / `aria-checked`; paused currentTime stable to <0.05s over 2.6s at the full stage; pause survives p31 contraction and p95 re-expansion; unpause advances; offscreen and simulated document-hidden are stable; ribbon switch preserved; the aperture pass keeps playing | D |
+| NLP-09 | Tablet, mobile, touch and short desktop windows use the natural-flow masthead + the same video + caption with the live poster capsule, readable tracking, no sticky/trigger and no overflow; reduced motion and no-JS show the aligned masthead, branded poster, caption and no playback | same: 834 rows 783.6/783.6, section 914.1; 1024×500 demotes to static (section 872.9, rows 962.6/962.6, trigger 0); 390 rows 361.9/362.2, section 512.8; one natural-flow video playing, no duplicate still; touch lens `display:none`; reduced 1440 section 1325.6, media hidden, poster visible, video unloaded and paused; no-JS 1440/390/320 rows within 0.5px, sections 1313.9/510.9/454; zero overflow | D |
+| NLP-10 | The approved assets are served unmodified, light and dark themes keep the approved tokens, the sticky stage releases naturally, and the build and recording are clean | same: served showreel 7,120,424 bytes and SHA-256 `38098de3…257e4`; poster 200 `image/webp`; enhanced light top `rgb(21,14,52)` / bottom+border `rgb(99,19,57)` / transparent capsule; dark top white / bottom+border `rgb(182,175,203)`; static rim white light and midnight dark; stage 0 at p100 and −200 after 200px; `tsc`, scoped ESLint, `pnpm build` clean; dev + production 0 failures; recording 10.47s, 1440×900, 15fps, 3.95MB | D |
+
+**Totals:** 58 currently verified, 10 historically passed, 22 deferred, 1 not yet
 tested, 0 failed.
 
 - 70 hero rows: 6+6+6+7+5+5+6+5+10+8+3+3.
-- 11 delivery rows: NL-01…NL-11 (all deferred).
+- 21 delivery rows: NL-01…NL-11 and NLP-01…NLP-10 (all deferred).
 
 ## Script → case manifest
 
@@ -221,6 +244,8 @@ tested, 0 failed.
 | `responsive/hero-card-peek.js` | CO-06, CO-07 | Peek-percentage comparison. |
 | `e2e/scroll-chrome.js` | NL-01…NL-06 | DEL-00/00.1 navbar progress + branded scrollbar. |
 | `e2e/service-ribbon.js` | NL-07…NL-11 | DEL-00.2/00.2A/00.2B/00.2C/00.2D/00.2E placement, band/type proportions, mirrored separation, signed pointer deformation, loop, menu switch and fallbacks. |
+| `e2e/project-aperture.js` | NLP-01…NLP-10 | DEL-00.3C opposing entrance, 0.01em tracking/width match, measured capsule aperture, one persistent video playing through expansion/reverse, deferred source and poster, stable caption, lens gating, pause lifecycle, asset hash, themes, sticky release, responsive/reduced/no-JS/touch and overflow. |
+| `e2e/project-aperture-recording.js` | NLP-05, NLP-06, NLP-10 | 10.5s, 15fps MP4 of headline entrance → moving capsule → aperture expansion with playback → full-stage moving reel → exit. |
 
 Cases without a preserved script (H rows and shell cases) were verified by the
 one-off probes in the temporary directory and by the HERO-06A/06B reports; they

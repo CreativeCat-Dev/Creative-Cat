@@ -1,0 +1,547 @@
+/*
+ * Next Level Projects — the kinetic masthead and its continuous showreel
+ * aperture.
+ *
+ * DEL-00.3B combined the reference masthead with the Animata aperture. DEL-00.3C
+ * keeps that architecture and replaces the four-image slideshow with one
+ * persistent, muted, looping Creative Cat video. The same video element is
+ * clipped to the measured capsule and grows into the full stage; there is no
+ * second media layer and no static hand-off.
+ *
+ * Static-first: the server HTML (and no-JS/reduced motion) is the aligned
+ * masthead, the branded poster and the caption. The same DOM gains the
+ * entrance, the aperture, the playing showreel and the lens only when
+ * JavaScript and motion are available. Every selector is scoped to
+ * `[data-next-level]` / `[data-nlp-lens]`, so this global sheet cannot leak into
+ * the hero or the rest of the site.
+ */
+
+[data-next-level] {
+  --nlp-gutter: clamp(14px, 3vw, 64px);
+  /* Light theme: wine second line and matching capsule outline. */
+  --nlp-second: var(--secondary);
+  position: relative;
+  z-index: 0;
+  overflow: clip;
+  background: var(--background);
+  color: var(--foreground);
+}
+
+/* Dark theme: the muted foreground keeps the second line readable on midnight. */
+.dark [data-next-level] {
+  --nlp-second: var(--muted-foreground);
+}
+
+[data-nlp-stage] {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(28px, 4vw, 56px);
+  padding: clamp(56px, 7vw, 112px) var(--nlp-gutter) clamp(28px, 4vw, 56px);
+  overflow: clip;
+}
+
+/* ---------------------------------------------------------------- masthead */
+
+[data-nlp-masthead] {
+  display: flex;
+  justify-content: center;
+}
+
+[data-nlp-title] {
+  width: 100%;
+  margin: 0;
+  font-family: var(--font-heading);
+  /*
+   * 0.01em of positive tracking is the measured balance: the letters separate
+   * clearly at 1440 without losing the oversized editorial density. The base
+   * size leaves a little room for that tracking before JavaScript solves the
+   * exact row widths; no glyph compression or horizontal scaling is used.
+   */
+  font-size: clamp(42px, 14.1vw, 300px);
+  font-weight: 700;
+  font-variation-settings: "wght" 700;
+  line-height: 0.91;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+[data-nlp-lines] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+[data-nlp-line] {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  font-size: 1em;
+  font-weight: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  transform-origin: center;
+}
+
+/*
+ * NEXT and LEVEL are separate fragments so the aperture can part them. The gap
+ * replaces the word space that a flex row would discard. It is part of the top
+ * row's measured width, so the PROJECTS row is matched to it.
+ */
+[data-nlp-line="top"] {
+  gap: 0.16em;
+  color: var(--foreground);
+}
+
+[data-nlp-line="bottom"] {
+  /*
+   * CSS fallback for the measured width match: the PROJECTS row is shorter than
+   * NEXT LEVEL at the same size, so it is authored slightly smaller. JavaScript
+   * solves the exact ratio once the webfont has settled; this keeps no-JS and
+   * reduced-motion visitors close.
+   */
+  margin-top: 0.02em;
+  font-size: 0.933em;
+  color: var(--nlp-second);
+}
+
+[data-nlp-fragment] {
+  display: inline-block;
+  transform-origin: center;
+}
+
+/* ----------------------------------------------------------------- capsule */
+
+/*
+ * The O of PROJECTS: an elongated outlined window. The border matches the
+ * surrounding glyph strokes (currentColor = the second-line colour), the padding
+ * leaves a thin theme-background rim, and the slider clips the artwork to the
+ * same pill.
+ *
+ * In enhanced mode the slider's own image is hidden: the shared full-stage media
+ * layer is clipped to this exact slider rectangle and shows through the
+ * transparent capsule. That is what makes the aperture one continuous viewport.
+ */
+[data-nlp-capsule] {
+  position: relative;
+  display: inline-block;
+  flex: 0 0 1.9em;
+  height: 0.76em;
+  margin: 0 0.055em;
+  padding: 0.025em;
+  overflow: hidden;
+  border: 0.09em solid currentColor;
+  border-radius: 999px;
+  background: var(--background);
+  transform: translateY(0.025em);
+}
+
+[data-nlp-slider] {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 999px;
+  /* Matches the capsule rim, so a mid-slide gap reads as the window edge
+     rather than a grey block. */
+  background: var(--background);
+}
+
+/* The capsule shows the branded poster; the full video is never duplicated. */
+[data-nlp-capsule-poster] {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* ------------------------------------------------------------ media / aperture */
+
+/*
+ * One shared media layer and one video element.
+ *
+ * Without motion this layer is not displayed and the poster still in the figure
+ * below is the visible artwork. With motion it is the natural-flow media on
+ * tablet/mobile and the clipped full-stage aperture on desktop.
+ */
+[data-nlp-media] {
+  display: none;
+}
+
+[data-nlp-showreel] {
+  position: absolute;
+  inset: 0;
+  transform-origin: center;
+}
+
+.nlp-video {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  background: var(--secondary);
+}
+
+/* Natural flow: the same video below the masthead on tablet and mobile. */
+[data-next-level][data-nlp-motion="on"]:not([data-nlp-mode="enhanced"]) [data-nlp-media] {
+  display: block;
+  position: relative;
+  z-index: 0;
+  width: 100%;
+  overflow: hidden;
+  border-radius: clamp(16px, 2vw, 28px);
+  background: var(--secondary);
+  aspect-ratio: 16 / 9;
+  max-height: 60svh;
+}
+
+/* The full-stage showreel is one continuous animation surface. */
+[data-nlp-mode="enhanced"] [data-nlp-media] {
+  display: block;
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  background: var(--secondary);
+  /* Replaced on the first measured frame. Hiding before that avoids a flash of
+     the full stage if the browser paints between hydration and measurement. */
+  clip-path: inset(50% round 999px);
+  pointer-events: none;
+  will-change: clip-path;
+}
+
+[data-nlp-mode="enhanced"] [data-nlp-showreel] {
+  will-change: transform;
+}
+
+[data-nlp-mode="enhanced"] [data-nlp-capsule] {
+  background: transparent;
+}
+
+[data-nlp-mode="enhanced"] [data-nlp-slider] {
+  background: transparent;
+}
+
+[data-nlp-mode="enhanced"] [data-nlp-capsule-poster] {
+  visibility: hidden;
+}
+
+/* ------------------------------------------------------------------- scrim */
+
+[data-nlp-scrim] {
+  display: none;
+}
+
+[data-nlp-mode="enhanced"] [data-nlp-scrim] {
+  display: block;
+  position: absolute;
+  inset: auto 0 0;
+  z-index: 2;
+  height: min(52svh, 460px);
+  background: linear-gradient(
+    to top,
+    rgb(21 14 52 / 0.9) 0%,
+    rgb(21 14 52 / 0.52) 44%,
+    rgb(21 14 52 / 0) 100%
+  );
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ------------------------------------------------------------ static figure */
+
+[data-nlp-static] {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  border-radius: clamp(16px, 2vw, 28px);
+  background: var(--secondary);
+  aspect-ratio: 16 / 9;
+  max-height: 60svh;
+}
+
+[data-nlp-static] img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/*
+ * The still is the static/no-JS presentation. With motion the shared video is
+ * the natural-flow media on tablet/mobile, and the desktop aperture swaps the
+ * still for the full-stage showreel.
+ */
+[data-nlp-motion="on"] [data-nlp-static] {
+  display: none;
+}
+
+[data-nlp-mode="enhanced"] [data-nlp-static] {
+  display: none;
+}
+
+/* ----------------------------------------------------------------- caption */
+
+[data-nlp-caption] {
+  --nlp-caption-opacity: 1;
+  --nlp-caption-q: 1;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 1.4vw, 18px);
+  max-width: 46rem;
+  padding-top: clamp(18px, 2.4vw, 30px);
+  border-top: 1px solid color-mix(in srgb, var(--foreground) 18%, transparent);
+  color: var(--foreground);
+  opacity: var(--nlp-caption-opacity);
+  transition: opacity 120ms linear;
+}
+
+.nlp-caption__eyebrow {
+  margin: 0;
+  color: var(--primary);
+  font-family: var(--font-sans, var(--font-body, sans-serif));
+  font-size: clamp(10px, 0.9vw, 12px);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.nlp-caption__line {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(22px, 2.6vw, 40px);
+  font-weight: 700;
+  line-height: 0.98;
+  letter-spacing: 0.005em;
+}
+
+.nlp-caption__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px 28px;
+}
+
+.nlp-caption__copy {
+  margin: 0;
+  max-width: 42em;
+  font-family: var(--font-sans, var(--font-body, sans-serif));
+  font-size: clamp(12px, 1.1vw, 15px);
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--foreground) 72%, transparent);
+}
+
+[data-nlp-word] {
+  /*
+   * The caption is read in word by word. --nlp-caption-q is the scroll-driven
+   * read value; each word overlaps its neighbours by four words.
+   */
+  opacity: calc(
+    0.16 +
+      0.84 *
+        clamp(
+          0,
+          calc(
+            (var(--nlp-caption-q) * (var(--nlp-word-count) + 4) - var(--nlp-word-index)) / 4
+          ),
+          1
+        )
+  );
+}
+
+[data-nlp-mode="enhanced"] [data-nlp-caption] {
+  --nlp-caption-opacity: 0;
+  --nlp-caption-q: 0;
+  position: absolute;
+  right: var(--nlp-gutter);
+  bottom: clamp(24px, 6vh, 64px);
+  left: var(--nlp-gutter);
+  z-index: 4;
+  max-width: min(52rem, calc(100% - var(--nlp-gutter) * 2));
+  padding-top: 0;
+  border-top: 0;
+  color: #fff;
+  pointer-events: none;
+}
+
+[data-nlp-mode="enhanced"] .nlp-caption__eyebrow {
+  color: var(--primary);
+}
+
+[data-nlp-mode="enhanced"] .nlp-caption__copy {
+  color: rgb(255 255 255 / 0.76);
+}
+
+/* ------------------------------------------------------------ pointer lens */
+
+/*
+ * The reference's decorative inversion lens. It is a sibling of the section
+ * (not a descendant) so the section's clipping can never clip the fixed lens,
+ * and the menu overlay stays above it. It holds a runtime clone of the live
+ * masthead. Coral surface, white type and inverted artwork: exactly the
+ * reference construction, not a global cursor.
+ */
+[data-nlp-lens] {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 45;
+  width: 120px;
+  height: 120px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--primary);
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translate3d(-200px, -200px, 0) scale(0.2);
+  transform-origin: center;
+  contain: layout paint style;
+}
+
+[data-nlp-lens] [data-nlp-title] {
+  position: absolute;
+  max-width: none;
+  margin: 0;
+  color: #fff;
+}
+
+[data-nlp-lens] [data-nlp-line="top"],
+[data-nlp-lens] [data-nlp-line="bottom"] {
+  color: #fff;
+}
+
+[data-nlp-lens] [data-nlp-capsule] {
+  border-color: #fff;
+  background: #fff;
+}
+
+[data-nlp-lens] [data-nlp-slider] {
+  background: #fff;
+}
+
+[data-nlp-lens] .nlp-video {
+  display: none;
+}
+
+[data-nlp-lens] [data-nlp-capsule-poster] {
+  filter: invert(1);
+}
+
+/* --------------------------------------------------------------- enhanced stage */
+
+/*
+ * The runway is 190svh with a native sticky 100svh stage: 90svh of aperture
+ * travel, no GSAP pin, no second scroll container. The section itself stays
+ * unclipped so sticky works; the stage clips the horizontal entrance instead.
+ */
+[data-next-level][data-nlp-mode="enhanced"] {
+  height: 190vh;
+  height: 190svh;
+  overflow: visible;
+}
+
+[data-nlp-mode="enhanced"] [data-nlp-stage] {
+  position: sticky;
+  top: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  place-items: center;
+  gap: 0;
+  height: 100vh;
+  height: 100svh;
+  padding: 0 var(--nlp-gutter);
+  overflow: clip;
+}
+
+[data-nlp-mode="enhanced"] [data-nlp-masthead] {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+}
+
+/* --------------------------------------------------------------- responsive */
+
+@media (max-width: 767px) {
+  [data-nlp-stage] {
+    padding-top: clamp(40px, 10vw, 64px);
+    padding-bottom: clamp(20px, 5vw, 32px);
+  }
+}
+
+/*
+ * Touch and reduced motion never get the lens. The JavaScript also skips
+ * creating it, so this is the CSS guarantee for a failed or partial boot.
+ */
+@media (pointer: coarse), (prefers-reduced-motion: reduce) {
+  [data-nlp-lens] {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-nlp-fragment] {
+    will-change: transform, opacity;
+  }
+}
+
+/*
+ * Reduced motion is a complete static fallback even if a mode attribute was set
+ * before the preference changed: no runway, no sticky stage, no clipped media,
+ * visible still and caption.
+ */
+@media (prefers-reduced-motion: reduce) {
+  [data-next-level],
+  [data-next-level][data-nlp-mode="enhanced"] {
+    height: auto !important;
+    overflow: clip;
+  }
+
+  [data-nlp-mode="enhanced"] [data-nlp-stage] {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(28px, 4vw, 56px);
+    height: auto;
+    padding: clamp(56px, 7vw, 112px) var(--nlp-gutter) clamp(28px, 4vw, 56px);
+  }
+
+  [data-nlp-mode="enhanced"] [data-nlp-media],
+  [data-next-level] [data-nlp-media] {
+    display: none !important;
+  }
+
+  [data-nlp-mode="enhanced"] [data-nlp-static],
+  [data-next-level] [data-nlp-static] {
+    display: block !important;
+  }
+
+  [data-nlp-mode="enhanced"] [data-nlp-caption] {
+    position: static;
+    max-width: 46rem;
+    padding-top: clamp(18px, 2.4vw, 30px);
+    border-top: 1px solid color-mix(in srgb, var(--foreground) 18%, transparent);
+    color: var(--foreground);
+    opacity: 1;
+  }
+
+  [data-nlp-mode="enhanced"] .nlp-caption__copy {
+    color: color-mix(in srgb, var(--foreground) 72%, transparent);
+  }
+
+  [data-nlp-mode="enhanced"] [data-nlp-scrim] {
+    display: none;
+  }
+
+  [data-nlp-mode="enhanced"] [data-nlp-masthead] {
+    position: static;
+  }
+}

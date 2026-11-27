@@ -5,8 +5,9 @@ survives the temporary directory. The hero is **frozen** (see
 `context/09_DECISIONS.md`, "Delivery sprint"), so these scripts are an archive and
 a future regression harness, not a per-change gate.
 
-- Register: [`hero-regression.md`](./hero-regression.md) — 70 hero cases plus 11
-  delivery cases, statuses, and the script → case manifest.
+- Register: [`hero-regression.md`](./hero-regression.md) — 70 hero cases plus 21
+  delivery cases (service ribbon + Next Level Projects masthead/video aperture),
+  statuses, and the script → case manifest.
 - Scripts: `e2e/`, `responsive/`, `accessibility/`, `performance/`.
 - Shared loader: `lib/playwright.js`, `lib/paths.js`.
 - Local, git-ignored overrides: `.local/runtime.json`.
@@ -65,11 +66,16 @@ node tests/e2e/hero-entrance.js
 Every script prints human-readable lines and/or JSON to stdout. Scripts that
 write artefacts create their own directory under `HERO_OUT_DIR`.
 
+`e2e/project-aperture-recording.js` writes the DEL-00.3C showreel-aperture MP4
+under `tests/.local/out/next-level-projects-video/` (10.5s, 1440×900, 15fps) and
+needs `FFMPEG_PATH` pointing at a full ffmpeg build.
+
 Recommended first runs after a fresh checkout:
 
 | Script | Runtime | Why |
 |---|---|---|
 | `e2e/hero-entrance.js` | ~30 s | Proves the loader, base URL and headline selectors. |
+| `e2e/project-aperture.js` | ~4 min | DEL-00.3C tracking/width match, opposing entrance, measured capsule aperture, one persistent video playing through expansion and reverse, deferred source/poster, caption, lens, pause, sticky release, asset hash, themes, reduced/no-JS/touch and overflow. |
 | `e2e/hero-architecture-regression.js` | ~2 min | Mode crossing, restoration, WebGL, no-JS, reduced motion. |
 | `accessibility/hero-enlarged-text.js` | ~2 min | Enlarged-text overflow/clearance matrix. |
 | `e2e/hero-responsive-matrix.js` | ~15 min | Full matrix; use only for a consolidated QA pass. |

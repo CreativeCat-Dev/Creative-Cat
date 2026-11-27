@@ -16,6 +16,12 @@ import {
   subscribeRibbonMotion,
   toggleRibbonMotion,
 } from "@/lib/ribbon-motion";
+import {
+  getProjectMotionAvailable,
+  getProjectMotionPaused,
+  subscribeProjectMotion,
+  toggleProjectMotion,
+} from "@/lib/project-motion";
 
 type MenuOverlayProps = {
   open: boolean;
@@ -56,6 +62,16 @@ export function MenuOverlay({ open, onClose, onNavigate, onClosed }: MenuOverlay
   const ribbonAvailable = useSyncExternalStore(
     subscribeRibbonMotion,
     getRibbonMotionAvailable,
+    () => false,
+  );
+  const projectPaused = useSyncExternalStore(
+    subscribeProjectMotion,
+    getProjectMotionPaused,
+    () => false,
+  );
+  const projectAvailable = useSyncExternalStore(
+    subscribeProjectMotion,
+    getProjectMotionAvailable,
     () => false,
   );
   /**
@@ -465,6 +481,27 @@ export function MenuOverlay({ open, onClose, onNavigate, onClosed }: MenuOverlay
                 <span aria-hidden>Ribbon motion</span>
                 <span aria-hidden className="text-muted-foreground/60">
                   {ribbonPaused ? "Paused" : "On"}
+                </span>
+              </button>
+            ) : null}
+            {projectAvailable ? (
+              <button
+                type="button"
+                role="switch"
+                aria-checked={!projectPaused}
+                aria-label="Showreel motion"
+                onClick={toggleProjectMotion}
+                className={`inline-flex min-h-11 items-center gap-2 rounded-full px-1 text-muted-foreground transition-colors hover:text-primary motion-reduce:hidden ${microLabel} ${focusRing}`}
+              >
+                <span
+                  aria-hidden
+                  className={`size-1.5 rounded-full ${
+                    projectPaused ? "bg-muted-foreground/40" : "bg-primary"
+                  }`}
+                />
+                <span aria-hidden>Showreel motion</span>
+                <span aria-hidden className="text-muted-foreground/60">
+                  {projectPaused ? "Paused" : "On"}
                 </span>
               </button>
             ) : null}
