@@ -1,0 +1,403 @@
+/*
+ * DEL-01A — Immersive homepage Selected Projects.
+ *
+ * A light editorial gallery in the light theme and a deep plum gallery in the
+ * dark theme, so it is clearly distinct from the midnight showreel above. All
+ * selectors are scoped to `[data-selected-work]`; the frozen Work index and the
+ * project showcase keep their own presentation.
+ *
+ * Layout, type, surface and hover live here. The whole-card scroll movement,
+ * the opening circular clip and the internal parallax are owned by
+ * `selected-work.tsx`, and each writes a different element/property.
+ */
+
+[data-selected-work] {
+  --sw-bg: #f7f6f3;
+  --sw-ink: #150e34;
+  --sw-muted: #57506e;
+  --sw-line: rgb(21 14 52 / 0.14);
+  --sw-frame: #e9e4db;
+  --sw-ring: rgb(21 14 52 / 0.08);
+  --sw-action-bg: #ffffff;
+  --sw-action-ink: #150e34;
+  --sw-coral: #ff1c43;
+  --sw-gutter: clamp(18px, 4.4vw, 80px);
+  --sw-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  position: relative;
+  z-index: 1;
+  overflow: clip;
+  background: var(--sw-bg);
+  color: var(--sw-ink);
+  padding: clamp(44px, 5.5vw, 84px) var(--sw-gutter)
+    clamp(96px, 11vw, 170px);
+}
+
+.dark [data-selected-work] {
+  --sw-bg: #241b3c;
+  --sw-ink: #ffffff;
+  --sw-muted: #c3bbd8;
+  --sw-line: rgb(255 255 255 / 0.16);
+  --sw-frame: #2e2448;
+  --sw-ring: rgb(255 255 255 / 0.1);
+}
+
+[data-sw-inner] {
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+/* ------------------------------------------------------------------ gallery */
+
+[data-sw-gallery] {
+  display: grid;
+}
+
+[data-sw-item] {
+  min-width: 0;
+}
+
+@media (min-width: 1024px) {
+  [data-sw-gallery] {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: clamp(20px, 2.4vw, 40px);
+    row-gap: clamp(110px, 12vw, 200px);
+  }
+
+  [data-sw-item="opening"] {
+    grid-column: 2 / span 10;
+  }
+
+  [data-sw-item="left-1"] {
+    grid-column: 1 / span 6;
+  }
+
+  [data-sw-item="right-1"] {
+    grid-column: 7 / span 5;
+    margin-top: clamp(100px, 12vw, 190px);
+  }
+
+  [data-sw-item="feature-right"] {
+    grid-column: 5 / -1;
+  }
+
+  [data-sw-item="left-2"] {
+    grid-column: 2 / span 5;
+    margin-top: clamp(20px, 3vw, 50px);
+  }
+
+  [data-sw-item="right-2"] {
+    grid-column: 8 / span 4;
+    margin-top: clamp(130px, 14vw, 210px);
+  }
+
+  [data-sw-item="closing"] {
+    grid-column: 3 / span 8;
+    margin-top: clamp(20px, 3vw, 50px);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  [data-sw-gallery] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: clamp(20px, 3vw, 32px);
+    row-gap: clamp(64px, 8vw, 96px);
+  }
+
+  [data-sw-item="opening"],
+  [data-sw-item="feature-right"],
+  [data-sw-item="closing"] {
+    grid-column: 1 / -1;
+  }
+
+  [data-sw-item="right-1"],
+  [data-sw-item="right-2"] {
+    margin-top: clamp(48px, 6vw, 72px);
+  }
+}
+
+@media (max-width: 767px) {
+  [data-selected-work] {
+    padding-top: clamp(40px, 10vw, 64px);
+    padding-bottom: clamp(76px, 18vw, 110px);
+  }
+
+  [data-sw-gallery] {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: clamp(48px, 12vw, 72px);
+  }
+
+  [data-sw-item] {
+    margin-top: 0 !important;
+  }
+
+  /* A 16:9 opening is too shallow on a phone; 4:3 keeps the reveal legible. */
+  [data-sw-item="opening"] [data-sw-media] {
+    --sw-aspect: 4 / 3 !important;
+  }
+}
+
+/* --------------------------------------------------------------------- card */
+
+[data-sw-card] {
+  position: relative;
+  min-width: 0;
+  color: inherit;
+}
+
+[data-sw-link] {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  outline: none;
+  border-radius: clamp(10px, 1vw, 16px);
+}
+
+[data-sw-link]:focus-visible {
+  outline: 2px solid var(--sw-coral);
+  outline-offset: 8px;
+}
+
+[data-sw-variant="opening"] [data-sw-shell] {
+  transition: transform 550ms var(--sw-ease);
+}
+
+/* DEL-01B perspective context. Only the six subsequent projects render this
+   wrapper; Zero keeps its original DOM and lift/zoom hover. */
+[data-sw-perspective] {
+  perspective: 1000px;
+  perspective-origin: 50% 100%;
+}
+
+[data-sw-panel] {
+  position: relative;
+  transform-style: preserve-3d;
+  transform-origin: 50% 100%;
+  will-change: transform;
+}
+
+[data-sw-media] {
+  position: relative;
+  aspect-ratio: var(--sw-aspect, 1 / 1);
+  overflow: hidden;
+  border-radius: clamp(8px, 0.9vw, 14px);
+  background: var(--sw-frame);
+  isolation: isolate;
+}
+
+/* A pre-hydration / pre-scroll resting circle. GSAP immediately replaces this
+   with its measured inline clip and scrubs it from here to the full rectangle.
+   Reduced motion never sets `data-sw-motion="on"`, so it is fully visible. */
+[data-selected-work][data-sw-motion="on"]
+  [data-sw-item="opening"]
+  [data-sw-media] {
+  clip-path: circle(clamp(28px, 5.2vw, 92px) at 50% 50%);
+}
+
+[data-sw-media]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px var(--sw-ring);
+  pointer-events: none;
+}
+
+/* Overscan for the internal drift: the wrapper, not the image, carries the
+   GSAP transform, so the artwork can move without exposing an edge. */
+[data-sw-parallax] {
+  position: absolute;
+  top: -7%;
+  right: 0;
+  bottom: -7%;
+  left: 0;
+  will-change: transform;
+}
+
+[data-sw-image] {
+  object-fit: cover;
+  transition: transform 900ms var(--sw-ease);
+}
+
+/* ---------------------------------------------------------- action circle */
+
+[data-sw-action] {
+  position: absolute;
+  right: clamp(14px, 1.6vw, 24px);
+  bottom: clamp(14px, 1.6vw, 24px);
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: clamp(44px, 3.6vw, 58px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--sw-action-bg);
+  color: var(--sw-action-ink);
+  box-shadow: 0 12px 34px rgb(21 14 52 / 0.2);
+  transition:
+    background-color 320ms ease-out,
+    color 320ms ease-out,
+    transform 460ms var(--sw-ease);
+}
+
+[data-sw-action] svg {
+  width: 34%;
+  height: 34%;
+  transition: transform 460ms var(--sw-ease);
+}
+
+/* ------------------------------------------------------------------- info */
+
+[data-sw-info] {
+  padding-top: clamp(16px, 1.8vw, 26px);
+}
+
+[data-sw-head] {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 28px;
+}
+
+[data-sw-name] {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(26px, 2.4vw, 42px);
+  font-weight: 500;
+  font-variation-settings: "wght" 500;
+  line-height: 1;
+  letter-spacing: -0.018em;
+  overflow-wrap: anywhere;
+}
+
+[data-sw-tags] {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: clamp(9px, 0.78vw, 11px);
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--sw-muted);
+}
+
+[data-sw-tag] {
+  display: inline-flex;
+  align-items: baseline;
+}
+
+[data-sw-tag-sep] {
+  margin: 0 0.7em;
+  opacity: 0.5;
+}
+
+[data-sw-desc] {
+  max-width: 54ch;
+  margin: clamp(9px, 1vw, 14px) 0 0;
+  font-family: var(--font-sans);
+  font-size: clamp(13px, 1.05vw, 16px);
+  line-height: 1.6;
+  color: var(--sw-muted);
+}
+
+[data-sw-item="opening"] [data-sw-name] {
+  font-size: clamp(34px, 4vw, 68px);
+}
+
+[data-sw-item="opening"] [data-sw-desc] {
+  max-width: 62ch;
+}
+
+[data-sw-item="feature-right"] [data-sw-name],
+[data-sw-item="closing"] [data-sw-name] {
+  font-size: clamp(30px, 3.4vw, 56px);
+}
+
+/* ------------------------------------------------------------ interaction */
+
+/* Zero keeps the DEL-01A lift/zoom/arrow hover exactly. */
+@media (hover: hover) {
+  [data-sw-variant="opening"] [data-sw-link]:hover [data-sw-shell] {
+    transform: translateY(-8px);
+  }
+
+  [data-sw-variant="opening"] [data-sw-link]:hover [data-sw-image] {
+    transform: scale(1.045);
+  }
+
+  [data-sw-variant="opening"] [data-sw-link]:hover [data-sw-action] {
+    background: var(--sw-coral);
+    color: var(--sw-action-ink);
+    transform: rotate(45deg) scale(1.06);
+  }
+
+  [data-sw-variant="opening"] [data-sw-link]:hover [data-sw-action] svg {
+    transform: translate(1px, -1px);
+  }
+
+  /* The six subsequent projects: no lift, no image zoom. The GSAP panel
+     rotation is the interaction; the action circle and plus stay attached. */
+  [data-sw-variant="perspective"] [data-sw-link]:hover [data-sw-action] {
+    background: var(--sw-coral);
+    color: var(--sw-action-ink);
+    transform: scale(1.06);
+  }
+
+  [data-sw-variant="perspective"] [data-sw-link]:hover [data-sw-action] svg {
+    transform: scale(1.12);
+  }
+}
+
+[data-sw-variant="opening"] [data-sw-link]:focus-visible [data-sw-shell] {
+  transform: translateY(-8px);
+}
+
+[data-sw-variant="opening"] [data-sw-link]:focus-visible [data-sw-image] {
+  transform: scale(1.045);
+}
+
+[data-sw-variant="opening"] [data-sw-link]:focus-visible [data-sw-action] {
+  background: var(--sw-coral);
+  color: var(--sw-action-ink);
+  transform: rotate(45deg) scale(1.06);
+}
+
+[data-sw-variant="opening"] [data-sw-link]:focus-visible [data-sw-action] svg {
+  transform: translate(1px, -1px);
+}
+
+[data-sw-variant="perspective"] [data-sw-link]:focus-visible [data-sw-action] {
+  background: var(--sw-coral);
+  color: var(--sw-action-ink);
+  transform: scale(1.06);
+}
+
+[data-sw-variant="perspective"] [data-sw-link]:focus-visible [data-sw-action] svg {
+  transform: scale(1.12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-sw-shell],
+  [data-sw-image],
+  [data-sw-action],
+  [data-sw-action] svg {
+    transition: none;
+  }
+
+  [data-sw-variant="opening"] [data-sw-link]:hover [data-sw-shell],
+  [data-sw-variant="opening"] [data-sw-link]:focus-visible [data-sw-shell],
+  [data-sw-variant="opening"] [data-sw-link]:hover [data-sw-image],
+  [data-sw-variant="opening"] [data-sw-link]:focus-visible [data-sw-image],
+  [data-sw-link]:hover [data-sw-action],
+  [data-sw-link]:focus-visible [data-sw-action],
+  [data-sw-link]:hover [data-sw-action] svg,
+  [data-sw-link]:focus-visible [data-sw-action] svg {
+    transform: none;
+  }
+}

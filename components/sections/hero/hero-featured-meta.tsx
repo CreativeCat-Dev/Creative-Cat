@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { WORK_PROJECTS, WORK_PROJECT_COUNT } from "@/lib/work";
+import { WORK_PROJECTS } from "@/lib/work";
 import { microLabel } from "@/lib/ui";
 import { getHeroNarrativeState } from "./hero-narrative";
 import { getCorridorProgress, subscribeCorridorProgress } from "./hero-corridor.store";
@@ -160,7 +160,7 @@ export function HeroFeaturedMeta() {
             aria-hidden
             className={`${outgoingClass} absolute top-0 right-0 font-heading tracking-[0.06em] text-muted-foreground tabular-nums`}
           >
-            {pad2(outgoing.index + 1)} / {WORK_PROJECT_COUNT}
+            {pad2(outgoing.index + 1)}
           </p>
         ) : null}
         <p
@@ -168,7 +168,7 @@ export function HeroFeaturedMeta() {
           data-hero-meta-count
           className={`${incomingClass ?? ""} font-heading tracking-[0.06em] text-muted-foreground tabular-nums`}
         >
-          {pad2(current.index + 1)} / {WORK_PROJECT_COUNT}
+          {pad2(current.index + 1)}
         </p>
       </div>
     </div>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Logo } from "./logo";
 import { MenuTrigger } from "@/components/navigation/menu-trigger";
+import { useMenu } from "@/components/navigation/menu-provider";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { useHeaderSurface, type HeaderSurface } from "@/lib/use-header-surface";
 import { focusRing, microLabel } from "@/lib/ui";
@@ -43,6 +44,7 @@ function Arrow({ className }: { className?: string }) {
 
 export function Navbar() {
   const headerRef = useRef<HTMLElement>(null);
+  const { open } = useMenu();
   const { surface, scrolled } = useHeaderSurface(headerRef);
 
   return (
@@ -50,7 +52,7 @@ export function Navbar() {
       ref={headerRef}
       data-surface={surface}
       className={cn(
-        "fixed inset-x-0 top-0 z-[var(--z-nav)]",
+        "fixed inset-x-0 top-0 z-[var(--z-nav)] will-change-transform",
         SURFACE_CLASS[surface]
       )}
     >
@@ -90,7 +92,7 @@ export function Navbar() {
           <MenuTrigger />
         </div>
       </div>
-      <NavbarScroll />
+      <NavbarScroll headerRef={headerRef} menuOpen={open} />
     </header>
   );
 }

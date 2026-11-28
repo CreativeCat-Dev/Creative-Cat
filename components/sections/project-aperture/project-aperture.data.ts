@@ -11,7 +11,7 @@
  *   extracted from that same video at 0.08s (no new artwork).
  *
  * The four authentic project artworks from DEL-00.3A/B
- * (`public/work/<slug>/glimpse.jpg` and the Splash Shine `aperture.jpg`) are
+ * (`public/work/<slug>/cover.png` and the Splash Shine `cover.png`) are
  * intentionally left on disk for the future portfolio; they are simply no
  * longer part of this section.
  *

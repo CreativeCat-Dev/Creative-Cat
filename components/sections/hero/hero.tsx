@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { focusRing, microLabel } from "@/lib/ui";
-import { WORK_PROJECT_COUNT, WORK_PROJECTS, type WorkProject } from "@/lib/work";
+import { WORK_PROJECTS, type WorkProject } from "@/lib/work";
 import { HeroCard } from "./hero-card";
 import { HeroCatStage } from "./hero-cat";
 import { HeroCorridor } from "./hero-corridor";
@@ -51,8 +51,9 @@ function FeaturedMeta({ project, index }: { project: WorkProject; index: number 
           {project.name}
         </p>
       </div>
+      {/* DEL-01A: the public counter shows the position only, not the total. */}
       <p className="shrink-0 font-heading text-[13px] tracking-[0.06em] text-muted-foreground tabular-nums">
-        {pad2(index + 1)} / {WORK_PROJECT_COUNT}
+        {pad2(index + 1)}
       </p>
     </div>
   );

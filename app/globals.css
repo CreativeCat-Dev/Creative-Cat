@@ -312,56 +312,6 @@ html[data-theme-transition="active"] *::after {
 }
 
 /*
- * HERO-04.1 — focal project interaction.
- *
- * Mounted only when `HAS_WORK_DESTINATIONS` is true, so in the shipped state
- * (no project has a published page) none of this paints and the corridor holds
- * no anchor at all. Reveal is a plain 180ms opacity/scale pair driven by browser
- * hover and focus; the pointer gate is the corridor's settled-window attribute,
- * not a timer, and no clock is involved.
- *
- * `scale` is used rather than `transform` so it composes with the translate
- * utilities that centre the circle and push the artwork in, instead of fighting
- * them for the same property.
- */
-[data-hero-project-layer] {
-  pointer-events: none;
-}
-
-[data-hero-project-layer] [data-hero-project-link] {
-  pointer-events: none;
-}
-
-[data-hero-project-layer][data-eligible="true"] [data-hero-project-link] {
-  pointer-events: auto;
-  cursor: pointer;
-}
-
-[data-hero-project-cue] {
-  opacity: 0;
-  scale: 0.9;
-  transition:
-    opacity 180ms ease-out,
-    scale 180ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-[data-hero-project-scrim] {
-  opacity: 0;
-  transition: opacity 180ms ease-out;
-}
-
-[data-hero-project-link]:hover [data-hero-project-cue],
-[data-hero-project-link]:focus-visible [data-hero-project-cue] {
-  opacity: 1;
-  scale: 1;
-}
-
-[data-hero-project-link]:hover [data-hero-project-scrim],
-[data-hero-project-link]:focus-visible [data-hero-project-scrim] {
-  opacity: 1;
-}
-
-/*
  * HERO-06B.3 — glass card.
  *
  * The artwork now fills the full 4:5 card, so the surface is only the 1px rim
@@ -425,10 +375,6 @@ html[data-theme-transition="active"] *::after {
   );
 }
 
-[data-hero-card-art] {
-  transition: scale 180ms ease-out;
-}
-
 /*
  * HERO-06B.3A — compact right-lane separation.
  *
@@ -452,8 +398,7 @@ html[data-theme-transition="active"] *::after {
  *
  * One shared value drives the whole presentation: the corridor container is
  * translated (every lane together, so the handoff and z-order stay exact), and
- * the featured anchor adds the same value to its 74% left. The project link
- * layer lives inside the corridor, so its hit region inherits the shift.
+ * the featured anchor adds the same value to its 74% left.
  */
 [data-hero-desktop] {
   --hero-focal-shift: min(
@@ -469,23 +414,6 @@ html[data-theme-transition="active"] *::after {
 [data-hero-featured-anchor] {
   left: calc(74% + var(--hero-focal-shift));
   margin-left: calc(var(--corridor-w) / -2);
-}
-
-[data-hero-corridor]:has([data-hero-project-link]:hover)
-  [data-corridor-index][data-focal="true"]
-  [data-hero-card-art],
-[data-hero-corridor]:has([data-hero-project-link]:focus-visible)
-  [data-corridor-index][data-focal="true"]
-  [data-hero-card-art] {
-  scale: 1.015;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  [data-hero-project-cue],
-  [data-hero-project-scrim],
-  [data-hero-card-art] {
-    transition: none;
-  }
 }
 
 /*

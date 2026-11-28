@@ -5,9 +5,13 @@ survives the temporary directory. The hero is **frozen** (see
 `context/09_DECISIONS.md`, "Delivery sprint"), so these scripts are an archive and
 a future regression harness, not a per-change gate.
 
-- Register: [`hero-regression.md`](./hero-regression.md) — 70 hero cases plus 21
-  delivery cases (service ribbon + Next Level Projects masthead/video aperture),
-  statuses, and the script → case manifest.
+- Register: [`hero-regression.md`](./hero-regression.md) — 70 hero cases plus 49
+  delivery cases (service ribbon, Next Level Projects masthead/video aperture, the
+  DEL-01A Selected Projects gallery with the DEL-01B perspective hover on the six
+  subsequent projects, canonical DEL-01C artwork, the DEL-01D.2 theme-following
+  full-width Work archive with a local feature/pair sequence and editorial
+  closing, the intelligent navbar and the project showcase), statuses, and the
+  script → case manifest.
 - Scripts: `e2e/`, `responsive/`, `accessibility/`, `performance/`.
 - Shared loader: `lib/playwright.js`, `lib/paths.js`.
 - Local, git-ignored overrides: `.local/runtime.json`.
@@ -70,12 +74,29 @@ write artefacts create their own directory under `HERO_OUT_DIR`.
 under `tests/.local/out/next-level-projects-video/` (10.5s, 1440×900, 15fps) and
 needs `FFMPEG_PATH` pointing at a full ffmpeg build.
 
+`e2e/selected-work-recording.js` writes the DEL-01B gallery MP4 under
+`tests/.local/out/selected-work/` (28.5s, 1440×900, 15fps). It starts at the
+showreel full stage, follows the natural release into the unchanged circular Zero
+reveal, scrolls the asymmetric gallery, alternates the perspective hover between
+Right Sight and Exciting Sundarban, hovers Splash Shine, recovers, continues
+through the remaining projects and reverses back to Zero and the contracting
+circle. The script derives the aperture hold from the section geometry, so it also
+runs against a production build.
+
+`e2e/work-archive-recording.js` writes the DEL-01D.2 Work MP4 under
+`tests/.local/out/work-archive/` (short, 1440×900, 15fps): theme-following archive
+scroll through the full-width feature / staggered pair sequence, artwork hover
+zoom and recovery, navbar hide/reveal and the editorial closing. It needs
+`FFMPEG_PATH` like the other recording scripts.
+
 Recommended first runs after a fresh checkout:
 
 | Script | Runtime | Why |
 |---|---|---|
 | `e2e/hero-entrance.js` | ~30 s | Proves the loader, base URL and headline selectors. |
 | `e2e/project-aperture.js` | ~4 min | DEL-00.3C tracking/width match, opposing entrance, measured capsule aperture, one persistent video playing through expansion and reverse, deferred source/poster, caption, lens, pause, sticky release, asset hash, themes, reduced/no-JS/touch and overflow. |
+| `e2e/selected-work.js` | ~7 min | DEL-01A circular Zero reveal and contract, scrubbed whole-card movement, asymmetric placement, descriptions/tags, hover/focus, light/dark surfaces, tablet/mobile, reduced/no-JS, all project routes and hero/aperture preservation; DEL-01B six-project perspective structure and recovery; DEL-01C canonical cover URLs/ratios; DEL-01D.2 theme-following Work archive, local feature/pair sequence, full-width cinematic features, hover zoom, editorial closing and removed hero link. |
+| `e2e/navbar-visibility.js` | ~2 min | Intelligent navbar: top visibility, 80px threshold, sustained hide, upward reveal, stop stability, 8px jitter tolerance, rapid reversal, menu/focus/route exceptions, progress synchronization, the Work surface in both themes, reduced/no-JS and real mobile touch swipes. |
 | `e2e/hero-architecture-regression.js` | ~2 min | Mode crossing, restoration, WebGL, no-JS, reduced motion. |
 | `accessibility/hero-enlarged-text.js` | ~2 min | Enlarged-text overflow/clearance matrix. |
 | `e2e/hero-responsive-matrix.js` | ~15 min | Full matrix; use only for a consolidated QA pass. |
@@ -86,7 +107,9 @@ Recommended first runs after a fresh checkout:
   (frame timing, `readPixels`, `100svh`, view transitions) may differ on another
   engine; cross-browser coverage is deferred.
 - The scripts depend on hero `data-*` hooks and `window.__heroStory` /
-  `window.__heroLenis` / `window.__heroCorridor` accessors. Renaming those hooks
+  `window.__heroLenis` / `window.__heroCorridor` accessors, plus the Work
+  `[data-work-card]` / `[data-work-frame]` / `[data-work-image]` hooks and the
+  navbar `[data-nav-progress]` / `[data-surface]` contract. Renaming those hooks
   breaks the scripts — update the selectors with the component.
 - `hero-responsive-matrix.js` writes ~170 screenshots; it needs disk space and
   several minutes.

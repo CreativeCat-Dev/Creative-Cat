@@ -118,8 +118,8 @@ const collectCandidates = (wrapper: Element): Candidate[] => {
   });
 
   document.querySelectorAll(CONTENT_SELECTOR).forEach((element) => {
-    // Hero content is curated above; corridor cards and project links are
-    // deliberate exclusions because they are decorative or mode-volatile.
+    // Hero content is curated above; corridor cards are a deliberate exclusion
+    // because they are decorative and mode-volatile.
     if (element.closest("[data-hero-story]")) return;
     const candidate = candidateFor(element, contentWeight(element));
     if (candidate) candidates.push(candidate);
@@ -143,8 +143,8 @@ const focusedCandidate = (): Candidate | null => {
  *
  * Priority: a visible focused control, then the semantic element at the reading
  * line (hero copy/headline first, then the next section, then the footer). A
- * persistent fallback is recorded in the same pass so a focused project link
- * that unmounts on demotion cannot strand the correction.
+ * persistent fallback is recorded in the same pass so a focused control that
+ * unmounts on demotion cannot strand the correction.
  */
 export function captureReadingAnchor(wrapper: Element): ReadingAnchor | null {
   const line = readingLine();

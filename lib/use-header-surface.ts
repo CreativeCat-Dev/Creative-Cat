@@ -64,7 +64,14 @@ function measure(): void {
     return;
   }
 
-  const probe = header.top + header.height / 2;
+  /*
+   * DEL-01D: the navbar can translate above the viewport while scrolling down.
+   * Sampling its current rect would then probe whatever section happens to sit
+   * at the top of the screen behind the hidden bar. The bar is fixed at top-0,
+   * so the stable intended band is measured from the viewport top; height is
+   * unaffected by the visibility transform.
+   */
+  const probe = header.height / 2;
   // No declaration: follow the theme rather than assume a light canvas.
   let next: HeaderSurface = "inherit";
 

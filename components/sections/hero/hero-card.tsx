@@ -12,8 +12,8 @@ import { cn } from "@/lib/utils";
  *
  * The only readable chrome is a 1px glass rim and inner highlight in
  * `app/globals.css`; the project name and counter live in real HTML beside the
- * card. The hover/focus push-in still lives on `data-hero-card-art`, so the card
- * box never changes size and the corridor geometry is untouched.
+ * card. DEL-01D removed the focal project interaction, so the card has no hover
+ * push-in, no scrim and no hidden activation target: it is decorative artwork.
  */
 export function HeroCard({
   project,
@@ -57,8 +57,6 @@ export function HeroCard({
           </div>
         ) : null}
 
-        {/* `data-hero-card-art` is the only element the focal hover pushes in
-            slightly; the card box itself never changes size, so no layout shift. */}
         <div data-hero-card-art className="absolute inset-0 overflow-hidden">
           <Image
             src={project.src}

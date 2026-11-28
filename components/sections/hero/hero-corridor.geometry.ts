@@ -179,28 +179,6 @@ const SHALLOW_TO = 52;
  */
 const FOCAL_Z = 1000;
 
-/**
- * Focal interaction window, in collection steps. A project link only becomes
- * pointer-interactive while its card is settled inside ±0.15 of the focal plane
- * (45px of travel at the 500svh budget), so a fast scroll cannot strobe a CTA
- * across every passing project. This is geometry, not a timer: no debounce, no
- * second state machine.
- */
-export const PROJECT_LINK_SETTLE_STEPS = 0.15;
-
-/**
- * The one rule for whether the focal card may offer a project link. Ownership
- * comes from the same `focal` flag the corridor paints and the counter reads;
- * a destination is required, so a project without a published page is never
- * interactive. Emphasis membership is deliberately irrelevant here.
- */
-export function projectLinkEligible(
-  frame: Pick<CorridorFrame, "focal" | "d">,
-  hasDestination: boolean
-): boolean {
-  return frame.focal && hasDestination && Math.abs(frame.d) <= PROJECT_LINK_SETTLE_STEPS;
-}
-
 const clamp01 = (value: number) => Math.min(1, Math.max(0, value));
 
 function smoothstep(t: number): number {

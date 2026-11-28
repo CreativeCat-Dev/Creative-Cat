@@ -1,0 +1,288 @@
+/*
+ * DEL-01D / DEL-01D.1 / DEL-01D.2 — Work archive.
+ *
+ * DEL-01D.2 makes every standalone project span the full archive measure while
+ * keeping the artwork cinematic rather than tall:
+ *
+ * - features own all twelve columns (1200px at 1440),
+ * - square sources use a 15:7 frame and landscape sources a 30:11 frame,
+ * - pairs keep the DEL-01D.1 ten-track band, native ratio and stagger.
+ *
+ * The route still follows the global light/dark theme through the existing
+ * tokens, and the shared footer still owns the closing contact action.
+ *
+ * The grid is a 12-column rhythm. Each card places itself by its own
+ * `data-work-layout` plus the archive data's frame variables, which keeps the
+ * DOM in reading order and avoids positional selectors. Only the image inside a
+ * stationary, clipped frame scales on hover, so captions never move and
+ * neighbouring cards are unaffected.
+ */
+
+[data-work-page] {
+  --work-ink: var(--foreground);
+  --work-muted: var(--muted-foreground);
+  --work-line: var(--border);
+  --work-frame: var(--muted);
+  --work-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  background: var(--background);
+  color: var(--foreground);
+}
+
+[data-work-archive] {
+  color: var(--work-ink);
+}
+
+[data-work-intro] {
+  border-top: 1px solid var(--work-line);
+  padding-top: clamp(22px, 2.6vw, 36px);
+}
+
+[data-work-gallery] {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(56px, 6.2vw, 88px);
+  margin-top: clamp(40px, 4.6vw, 72px);
+}
+
+[data-work-row] {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: clamp(32px, 4vw, 56px);
+  align-items: start;
+}
+
+/*
+ * DEL-01D.2 — every standalone project spans the complete gallery measure, so
+ * all five share identical left and right boundaries and no artwork sits beside
+ * a dead column. The last feature closes the sequence before the editorial
+ * closing and uses the same full-width geometry.
+ */
+[data-work-item][data-work-layout="feature"],
+[data-work-item][data-work-layout="closing"] {
+  grid-column: 1 / -1;
+}
+
+/*
+ * Pairs sit in a narrower ten-track band: one track inset on each side, a single
+ * gutter between the cards and the vertical stagger preserved. That keeps each
+ * card near 467px at 1440 so the contrast with the full-width features is
+ * intentional, not accidental.
+ */
+[data-work-item][data-work-layout="pair-left"] {
+  grid-column: 2 / 7;
+}
+
+[data-work-item][data-work-layout="pair-right"] {
+  grid-column: 7 / 12;
+  margin-top: clamp(32px, 4.2vw, 64px);
+}
+
+[data-work-frame] {
+  position: relative;
+  isolation: isolate;
+  aspect-ratio: var(--work-native-aspect);
+  background: var(--work-frame);
+}
+
+/*
+ * Cinematic feature framing starts at tablet width. Below 768px the frame falls
+ * back to the native artwork ratio so mobile visitors see the complete cover;
+ * no feature is ever stretched, and the image remains `object-fit: cover`.
+ */
+@media (min-width: 768px) {
+  [data-work-item][data-work-layout="feature"] [data-work-frame],
+  [data-work-item][data-work-layout="closing"] [data-work-frame] {
+    aspect-ratio: var(--work-feature-aspect, var(--work-native-aspect));
+  }
+
+  [data-work-item][data-work-layout="feature"] [data-work-image],
+  [data-work-item][data-work-layout="closing"] [data-work-image] {
+    object-position: var(--work-feature-position, 50% 50%);
+  }
+}
+
+[data-work-ring] {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px var(--work-line);
+  pointer-events: none;
+}
+
+[data-work-image] {
+  object-fit: cover;
+  transform: scale(1);
+  transition: transform 520ms var(--work-ease);
+  will-change: transform;
+}
+
+[data-work-caption] {
+  padding-top: clamp(14px, 1.5vw, 22px);
+}
+
+[data-work-heading] {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: clamp(14px, 2vw, 24px);
+}
+
+[data-work-name] {
+  margin: 0;
+  min-width: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(22px, 1.9vw, 30px);
+  font-weight: 500;
+  font-variation-settings: "wght" 500;
+  line-height: 1.04;
+  letter-spacing: -0.015em;
+  overflow-wrap: anywhere;
+}
+
+[data-work-item][data-work-layout="feature"] [data-work-name],
+[data-work-item][data-work-layout="closing"] [data-work-name] {
+  font-size: clamp(24px, 2.2vw, 32px);
+}
+
+[data-work-description] {
+  max-width: 52ch;
+  margin: clamp(8px, 0.9vw, 12px) 0 0;
+  font-family: var(--font-sans);
+  font-size: clamp(13.5px, 1vw, 15px);
+  line-height: 1.6;
+  color: var(--work-muted);
+}
+
+[data-work-tags] {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin: clamp(13px, 1.3vw, 19px) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+[data-work-tag] {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--work-line);
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--foreground) 4%, transparent);
+  padding: 5px 11px;
+  color: var(--work-muted);
+  font-family: var(--font-sans);
+  font-size: clamp(10px, 0.75vw, 11px);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+[data-work-arrow] {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: clamp(18px, 1.5vw, 24px);
+  aspect-ratio: 1;
+  margin-top: 0.35em;
+  color: var(--work-muted);
+  transition:
+    color 320ms ease-out,
+    transform 420ms var(--work-ease);
+}
+
+[data-work-arrow] svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* The whole card is the focus target; the ring uses the theme token pair. */
+[data-work-link]:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 6px;
+}
+
+@media (hover: hover) {
+  [data-work-link]:hover [data-work-image] {
+    transform: scale(1.055);
+  }
+
+  [data-work-link]:hover [data-work-arrow] {
+    color: var(--primary);
+    transform: translate(3px, -3px);
+  }
+}
+
+[data-work-link]:focus-visible [data-work-image] {
+  transform: scale(1.035);
+}
+
+[data-work-link]:focus-visible [data-work-arrow] {
+  color: var(--primary);
+  transform: translate(3px, -3px);
+}
+
+/*
+ * DEL-01D.1 — editorial closing. No card, no form and no second contact button;
+ * the footer immediately below provides the contact action.
+ */
+[data-work-closing] {
+  margin-top: clamp(80px, 8.4vw, 128px);
+  border-top: 1px solid var(--work-line);
+  padding-top: clamp(36px, 4vw, 56px);
+  padding-bottom: clamp(8px, 1vw, 20px);
+}
+
+/* Tablet: full-width features, pairs side by side, softened stagger. */
+@media (min-width: 768px) and (max-width: 1023.98px) {
+  [data-work-item][data-work-layout="pair-left"] {
+    grid-column: 1 / 7;
+  }
+
+  [data-work-item][data-work-layout="pair-right"] {
+    grid-column: 7 / 13;
+    margin-top: clamp(24px, 3.4vw, 44px);
+  }
+}
+
+/* Mobile: one complete artwork per row, no simulated stagger or hover. */
+@media (max-width: 767.98px) {
+  [data-work-row] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  [data-work-item][data-work-layout],
+  [data-work-item][data-work-layout][data-work-shape] {
+    grid-column: 1 / -1;
+    margin-top: 0;
+  }
+
+  [data-work-gallery] {
+    gap: clamp(52px, 12vw, 72px);
+  }
+
+  [data-work-name],
+  [data-work-item][data-work-layout="feature"] [data-work-name],
+  [data-work-item][data-work-layout="closing"] [data-work-name] {
+    font-size: clamp(24px, 7.4vw, 30px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-work-image],
+  [data-work-arrow] {
+    transition: none;
+  }
+
+  [data-work-link]:hover [data-work-image],
+  [data-work-link]:focus-visible [data-work-image] {
+    transform: none;
+  }
+
+  [data-work-link]:hover [data-work-arrow],
+  [data-work-link]:focus-visible [data-work-arrow] {
+    transform: none;
+  }
+}

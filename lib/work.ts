@@ -6,24 +6,28 @@
  * re-sorted at a call site. There is no separate index field to drift out of
  * step with it.
  *
- * Asset policy for HERO-00a: the supplied covers were moved into
- * `public/work/<slug>/cover.png` byte-for-byte — no crop, resize or recompress.
- * They are 424–463 px square, all fully opaque (the alpha channel exists but is
- * unused), so the corridor's 4:5 card cannot be filled without a decision:
+ * Asset policy (DEL-01C): each project has exactly one authoritative
+ * `public/work/<slug>/cover.png`, supplied byte-for-byte by the owner. Ten are
+ * 1254x1254 squares; Zero, Zero Blind Spots and Yogic Rhythm are 1672x941.
+ * `src` is the canonical `coverSrc(slug)` URL, including the artwork revision
+ * that invalidates a stale optimizer cache entry. No consumer overrides it and
+ * no second artwork collection exists.
  *
- * - `fit: "cover"` fills the 4:5 card and crops ~10% of each side. Used only
- *   where the crop lands on flat brand colour or decorative framing.
+ * The hero corridor still presents every cover inside a fixed 4:5 card, so
+ * `fit` records the one presentation decision that artwork needs there:
+ *
+ * - `fit: "cover"` fills the 4:5 card and crops the sides.
  * - `fit: "contain"` shows the artwork whole over an artwork-matched blurred
- *   extension painted by `HeroCard`, so the card remains edge-to-edge without
- *   cropping logos, project names or other edge-critical type.
+ *   extension painted by `HeroCard`.
+ *
+ * That is presentation geometry, not source identity. The Work index and the
+ * project showcase use the actual `width` / `height` and never crop.
  *
  * `category` comes from the published portfolio where it exists. `year` is null
  * everywhere because no project year is published; do not guess one.
- *
- * Resolution note for later: these are presentation covers at roughly 430 px.
- * At a 300–360 px card they are fine at 1×, and visibly soft on a 2× display.
- * Higher-resolution covers remain an outstanding asset task, not a blocker.
  */
+
+import { coverSrc } from "./artwork";
 
 export type WorkFit = "cover" | "contain";
 
@@ -33,18 +37,19 @@ export type WorkProject = {
   name: string;
   category: string | null;
   year: number | null;
+  /** Canonical cover URL, revisioned in `lib/artwork.ts`. */
   src: string;
-  /** Intrinsic pixel size of the supplied file. */
+  /** Intrinsic pixel size of the canonical cover. */
   width: number;
   height: number;
+  /** Hero card filling policy only. Never used to crop the archive/detail. */
   fit: WorkFit;
   /** Only set where a centred crop would lose the subject. */
   objectPosition?: string;
   /**
-   * Published project destination. Optional on purpose: the hero may only offer
-   * "View project" where a real page exists, and no route is invented for the
-   * others. Unset for every project until WEB-04 publishes case studies, which
-   * is why the hero's focal interaction currently renders nothing.
+   * The published project page. Every canonical project has a real
+   * `/work/[slug]` showcase. No route is invented for a slug that is not in
+   * this collection.
    */
   href?: string;
 };
@@ -55,60 +60,66 @@ export const WORK_PROJECTS: readonly WorkProject[] = [
     name: "Right Sight",
     category: "Branding",
     year: null,
-    src: "/work/right-sight/cover.png",
-    width: 428,
-    height: 438,
+    src: coverSrc("right-sight"),
+    width: 1254,
+    height: 1254,
     fit: "contain",
+    href: "/work/right-sight",
   },
   {
     slug: "zero",
     name: "Zero",
     category: "Branding",
     year: null,
-    src: "/work/zero/cover.png",
-    width: 424,
-    height: 418,
+    src: coverSrc("zero"),
+    width: 1672,
+    height: 941,
     fit: "cover",
+    href: "/work/zero",
   },
   {
     slug: "exciting-sundarban",
     name: "Exciting Sundarban",
     category: "Branding",
     year: null,
-    src: "/work/exciting-sundarban/cover.png",
-    width: 431,
-    height: 431,
+    src: coverSrc("exciting-sundarban"),
+    width: 1254,
+    height: 1254,
     fit: "cover",
+    href: "/work/exciting-sundarban",
   },
   {
     slug: "splash-shine",
     name: "Splash Shine",
     category: "Branding",
     year: null,
-    src: "/work/splash-shine/cover.png",
-    width: 427,
-    height: 431,
+    src: coverSrc("splash-shine"),
+    width: 1254,
+    height: 1254,
     fit: "contain",
+    href: "/work/splash-shine",
   },
   {
     slug: "gdri",
     name: "GDRI",
     category: "Branding",
     year: null,
-    src: "/work/gdri/cover.png",
-    width: 435,
-    height: 432,
+    src: coverSrc("gdri"),
+    width: 1254,
+    height: 1254,
     fit: "contain",
+    href: "/work/gdri",
   },
   {
     slug: "project-we",
     name: "Project WE",
     category: "Social Media",
     year: null,
-    src: "/work/project-we/cover.png",
-    width: 443,
-    height: 451,
+    src: coverSrc("project-we"),
+    width: 1254,
+    height: 1254,
     fit: "contain",
+    href: "/work/project-we",
   },
   {
     slug: "zero-blind-spots",
@@ -116,81 +127,101 @@ export const WORK_PROJECTS: readonly WorkProject[] = [
     // Not in the published collection, so no category is asserted.
     category: null,
     year: null,
-    src: "/work/zero-blind-spots/cover.png",
-    width: 460,
-    height: 457,
+    src: coverSrc("zero-blind-spots"),
+    width: 1672,
+    height: 941,
     fit: "contain",
+    href: "/work/zero-blind-spots",
   },
   {
     slug: "dipakkhik",
     name: "Dipakkhik",
     category: "Branding",
     year: null,
-    src: "/work/dipakkhik/cover.png",
-    width: 437,
-    height: 411,
+    src: coverSrc("dipakkhik"),
+    width: 1254,
+    height: 1254,
     fit: "contain",
+    href: "/work/dipakkhik",
   },
   {
     slug: "urbancut",
     name: "Urbancut",
     category: "Branding",
     year: null,
-    src: "/work/urbancut/cover.png",
-    width: 463,
-    height: 459,
+    src: coverSrc("urbancut"),
+    width: 1254,
+    height: 1254,
     fit: "cover",
+    href: "/work/urbancut",
   },
   {
     slug: "oralshine",
     name: "OralShine",
     category: "Branding",
     year: null,
-    src: "/work/oralshine/cover.png",
-    width: 432,
-    height: 434,
+    src: coverSrc("oralshine"),
+    width: 1254,
+    height: 1254,
     fit: "contain",
+    href: "/work/oralshine",
   },
   {
     slug: "flex",
     name: "FLEX",
     category: "Branding",
     year: null,
-    src: "/work/flex/cover.png",
-    width: 431,
-    height: 434,
+    src: coverSrc("flex"),
+    width: 1254,
+    height: 1254,
     fit: "cover",
+    href: "/work/flex",
   },
   {
     slug: "elegantic",
     name: "Elegantic",
     category: "Branding",
     year: null,
-    src: "/work/elegantic/cover.png",
-    width: 442,
-    height: 431,
+    src: coverSrc("elegantic"),
+    width: 1254,
+    height: 1254,
     fit: "cover",
+    href: "/work/elegantic",
   },
   {
     slug: "yogic-rhythm",
     name: "Yogic Rhythm",
     category: "Social Media",
     year: null,
-    src: "/work/yogic-rhythm/cover.png",
-    width: 445,
-    height: 442,
+    src: coverSrc("yogic-rhythm"),
+    width: 1672,
+    height: 941,
     fit: "contain",
+    href: "/work/yogic-rhythm",
   },
 ];
 
 /** Number of projects in the collection — the denominator of the hero counter. */
 export const WORK_PROJECT_COUNT = WORK_PROJECTS.length;
 
+/** Resolve one canonical project by slug. Case-sensitive, like the route. */
+export function getWorkProject(slug: string): WorkProject | undefined {
+  return WORK_PROJECTS.find((project) => project.slug === slug);
+}
+
+/** Canonical position of a project, or -1 when the slug is not published. */
+export function getWorkProjectIndex(slug: string): number {
+  return WORK_PROJECTS.findIndex((project) => project.slug === slug);
+}
+
 /**
- * Whether the collection has any published destination at all.
+ * The next project in canonical order, wrapping 13 -> 01.
  *
- * The hero reads this once to decide whether the focal interaction layer exists.
- * With no destinations it renders no layer, no anchor and no CTA, so the shipped
- * DOM cannot contain a dead link or an extra tab stop.
+ * The project showcase uses this so "Next Project" never invents an order and
+ * every valid showcase has a destination.
  */
-export const HAS_WORK_DESTINATIONS = WORK_PROJECTS.some((project) => Boolean(project.href));
+export function getNextWorkProject(slug: string): WorkProject {
+  const index = getWorkProjectIndex(slug);
+  if (index < 0) return WORK_PROJECTS[0];
+  return WORK_PROJECTS[(index + 1) % WORK_PROJECTS.length];
+}
