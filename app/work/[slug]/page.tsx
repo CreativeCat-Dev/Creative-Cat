@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ProjectDetail } from "@/components/work/project-detail";
+import { getCaseStudy } from "@/lib/case-study";
 import {
   getNextWorkProject,
   getWorkProject,
-  getWorkProjectIndex,
   WORK_PROJECTS,
 } from "@/lib/work";
 
@@ -40,6 +40,7 @@ export async function generateMetadata({
 }: ProjectPageProps): Promise<Metadata> {
   const { slug } = await params;
   const project = getWorkProject(slug);
+  const study = getCaseStudy(slug);
 
   if (!project) {
     return { title: "Project not found — Creative Cat" };
@@ -47,18 +48,20 @@ export async function generateMetadata({
 
   return {
     title: `${project.name} — Creative Cat`,
-    description: project.category
-      ? `${project.name}, a ${project.category.toLowerCase()} project by Creative Cat.`
-      : `${project.name}, selected work by Creative Cat.`,
+    description:
+      study?.introduction ??
+      (project.category
+        ? `${project.name}, a ${project.category.toLowerCase()} project by Creative Cat.`
+        : `${project.name}, selected work by Creative Cat.`),
   };
 }
 
 export default async function ProjectPage({ params }: ProjectPageProps) {
   const { slug } = await params;
   const project = getWorkProject(slug);
-  if (!project) notFound();
+  const study = getCaseStudy(slug);
+  if (!project || !study) notFound();
 
-  const index = getWorkProjectIndex(slug);
   const next = getNextWorkProject(slug);
 
   return (
@@ -68,7 +71,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
       className="w-full flex-1 px-5 pt-32 pb-24 md:px-9 md:pt-40 lg:px-12 xl:px-16"
     >
       <div className="mx-auto w-full max-w-[1240px]">
-        <ProjectDetail project={project} index={index} next={next} />
+        <ProjectDetail project={project} study={study} next={next} />
       </div>
     </main>
   );

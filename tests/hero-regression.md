@@ -227,12 +227,14 @@ as an asymmetric archive and adds the intelligent navbar; DEL-01D.1 reduces the
 archive artwork, restores theme-following surfaces and replaces the duplicate
 contact button with an editorial closing; DEL-01D.2 gives every standalone
 project the full 1200px measure in a cinematic frame and applies the owner's
-local feature/pair sequence. The individual project showcase keeps its
-presentation and receives artwork-fitting corrections only.
-`e2e/selected-work.js` and `e2e/navbar-visibility.js` pass with 0 failures on dev
-(:3000) on 2026-11-28; reports are under `tests/.local/out/`. The cases remain
-**D** under the delivery-sprint policy because the consolidated hero matrix is
-not being rerun.
+local feature/pair sequence; DEL-02 turns every canonical `/work/[slug]` route
+into a shared editorial case study with verified content, a sticky information
+rail, project palettes, conditional media and the canonical Next Project.
+`e2e/selected-work.js`, `e2e/project-case-studies.js` and
+`e2e/navbar-visibility.js` pass with 0 failures on dev (:3000) and a fresh
+production build (:3100) on 2026-11-28; reports are under `tests/.local/out/`.
+The cases remain **D** under the delivery-sprint policy because the consolidated
+hero matrix is not being rerun.
 
 | ID | Case | Evidence / script | Status |
 |---|---|---|---|
@@ -246,10 +248,10 @@ not being rerun.
 | SW-08 | Fine-pointer hover and keyboard focus are premium and restrained: the whole card lifts 8px, the image zooms to 1.045, the action circle turns coral and rotates/scales, and everything recovers; the card is one semantic link with no nested controls | same: shell translateY(-8px), image `matrix(1.045)`, action `rgb(255,28,67)` + rotation; recovery to identity; focus-visible outline 2px `rgb(255,28,67)`; 0 nested links/buttons per card; touch users activate the link without hover | D |
 | SW-09 | Artwork presentation is honest and canonical: one owner-supplied `cover.png` per project, no obsolete alternate, no stale override, and the artwork's own ratio is respected; Zero's 1672x941 opening fills its 2:1 frame, square covers fill 1:1, and no sampled background colour remains | same: ten 1254x1254 and three 1672x941 covers; Zero `object-fit: cover` with no #F1521E; Splash Shine/Urbancut 1:1; all homepage URLs carry `?v=20261128`; obsolete `glimpse.jpg`/`aperture.jpg`/`capsule.jpg` archived and removed | D |
 | SW-10 | DEL-01D supersedes the frozen Work grid, DEL-01D.1 refines it and DEL-01D.2 makes the standalone projects cinematic: `/work` is a theme-following editorial archive with a full-width-feature / staggered-pair rhythm, a local presentation order, a single semantic link per card, hover zoom, an editorial closing and no project total; the canonical collection and the homepage gallery do not leak into it | same: 9 rows (five full-width features alternating with four pairs); 13/13 cards exactly once; 1440 light paper/midnight and dark midnight/white; 834 features+pairs; 390 single column; no contact CTA before the footer; no `[data-selected-work]` | D |
-| SW-11 | The project showcases stay frozen: every valid slug resolves, an unknown slug is a deterministic 404, and Back to Work plus canonical Next Project (wrapping 13 -> 01) still work | same: all 13 `/work/<slug>` requests 200; `/work/not-a-project` 404; Right Sight "01 / 13" next Zero; Yogic Rhythm next Right Sight; `ensureStatic` + `instant = false` unchanged | D |
+| SW-11 | The project routes stay canonical: every valid slug resolves, an unknown slug is a deterministic 404, and Back to Work plus canonical Next Project (wrapping 13 -> 01) still work; DEL-02 removes the promotional collection total from the detail page | same: all 13 `/work/<slug>` requests 200; `/work/not-a-project` 404; Right Sight next Zero; Yogic Rhythm next Right Sight; `ensureStatic` + `instant = false` unchanged; `e2e/project-case-studies.js` confirms no `01 / 13` text | D |
 | SW-12 | The header surface is correct on both section themes with no boundary mismatch: theme-following `inherit` gives midnight navigation on the light gallery and white navigation on the plum gallery | same: `data-surface="inherit"`; nav `rgb(21,14,52)` light and `rgb(255,255,255)` dark; archive/detail remain theme-following | D |
 | SW-13 | Tablet, mobile, reduced motion and no-JS keep a complete, usable gallery: two columns on tablet with reduced movement, one column on mobile with a 4:3 opening and vertical-only movement, fully visible untransformed cards under reduced motion, and all links visible without JavaScript; zero overflow | same: 834 two columns, tablet strength 0.55; 390 one 354px column, 4:3 opening, 38px vertical-only entry; reduced motion `off`, clip none, transform none, 0 section triggers; no-JS 1440/390 clip none, all seven captions and links visible; no overflow in any state | D |
-| SW-14 | The visible project-total cleanup is applied on the homepage without touching indexing: the hero counter shows the position only (`01`), `WORK_PROJECT_COUNT` and all internal collection logic remain, and the deferred Work-page counts are recorded rather than redesigned | same: `[data-hero-meta-count]` is "01"; section text has no total; `WORK_PROJECT_COUNT` still exported and consumed by hero narrative/aperture logic; `/work` "13 projects" and detail "of 13" remain for the deferred pass | D |
+| SW-14 | The visible project-total cleanup is applied on the homepage without touching indexing: the hero counter shows the position only (`01`), `WORK_PROJECT_COUNT` and all internal collection logic remain, and the Work-page total is not exposed as promotional copy | same: `[data-hero-meta-count]` is "01"; section text has no total; `WORK_PROJECT_COUNT` still exported and consumed by hero narrative/aperture logic; DEL-02 later removed the detail "of 13" label while keeping canonical indexing | D |
 | SW-15 | The opening Zero project is protected: it has no perspective wrapper or panel, no new handlers, and its circular reveal, caption, arrow action, lift/zoom hover and responsive behaviour are unchanged | same: Zero is `data-sw-variant="opening"`, no `[data-sw-perspective]`/`[data-sw-panel]`, action icon "arrow"; start/mid/full circle 75/332/616.7px, reverse returns to 75px; hover shell -8px, image 1.045, action coral + rotated arrow; mobile 4:3 reveal unchanged | D |
 | SW-16 | Only the six subsequent projects carry the explicit perspective variant and the white-plus/coral action, with no fragile nth-child or positional selector | same: Right Sight, Exciting Sundarban, Splash Shine, GDRI, Project WE and Urbancut are `data-sw-variant="perspective"` with `[data-sw-perspective] > [data-sw-panel]` and a plus icon; Zero is the only opening variant | D |
 | SW-17 | Fine-pointer hover applies a 3D rotation to the complete artwork panel: perspective 1000px, rotateY 8deg, rotateX 1.5deg, origin bottom, 550ms in / 650ms out power3.out; the action moves with the panel, captions stay stationary, neighbours are untouched and the panel returns to identity | same: panel matrix3d on Right Sight/Sundarban/Splash; action rect moves with the panel; info rect unchanged to <0.6px; neighbour panel identity; recovery matrix identity; no shell lift and no image zoom | D |
@@ -270,11 +272,31 @@ not being rerun.
 | SW-27 | DEL-01D.2 gives each standalone project the complete 1200px measure in a cinematic frame without distortion: square sources use 15:7 (560px tall) and landscape sources 30:11 (440px tall) at 1440, with artwork-specific focal points; pairs stay 467px at their native ratio, titles stay 24-32px, descriptions 13.5-15px and tags 10-12px; mobile falls back to native ratios | `e2e/selected-work.js`: all five features 1200x560/1200x440 sharing the gallery left/right; positions 50% 38% / 50% 17% / 50% 45% / 50% 45% / 50% 35%; pairs 467.3 + 60.5px stagger + 104.7px inset; document 8155; 1920 1200x560/440, 1024 928x433/340, 834 762x356/279, 390 native 350x350/197 | D |
 | SW-28 | The DEL-01D.2 sequence is local to `/work` and does not re-sort canonical data: visual, DOM and keyboard order are the same permutation, every project appears exactly once, and the hero corridor, homepage Selected Projects and Next Project navigation keep the canonical collection order | `e2e/selected-work.js`: archive order Right Sight → Sundarban/Splash → Zero → GDRI/WE → Zero Blind Spots → Dipakkhik/Urbancut → OralShine → FLEX/Elegantic → Yogic; 13 unique; `lib/work.ts` untouched; routes 13/13; hero/aperture contract and canonical next-project checks unchanged | D |
 
-**Totals:** 58 currently verified, 10 historically passed, 50 deferred, 1 not yet
+## Q. Individual project case studies (DEL-02)
+
+DEL-02 replaces the former one-cover showcase with a reusable editorial case
+study. Identity, canonical covers, ordering and Next Project still come from
+`lib/work.ts`; `lib/case-study.ts` adds a typed content layer keyed by the same
+slugs. Published portfolio copy, services and two challenge/outcome records are
+paraphrased from the owner's current project records; creative direction and
+identity notes describe only the supplied artwork. Projects without published
+material stay shorter instead of gaining invented content. The cinematic cover
+remains a Creative Cat presentation asset, not a photograph of deliverables.
+
+| ID | Case | Evidence / script | Status |
+|---|---|---|---|
+| SW-29 | One shared architecture serves all 13 canonical routes: a typed slug-keyed content layer, no second project identity collection, a build guard for missing or extra slugs, and conditional sections that never render empty headings or fabricated content; every project appears once and no project total is shown | `e2e/project-case-studies.js` content block: 13/13 titles, intros, clients, next links; zero-blind-spots renders only overview, creative direction and style guide with an artwork-only provenance note; project-we and dipakkhik are the only outcome and standalone Challenges sections; no `\d / 13` text | D |
+| SW-30 | The complete canonical cover opens each case study at its intrinsic ratio — never the Work archive's cinematic crop — and supporting media are genuine project assets with native ratios, descriptive alt text, responsive sizes and lazy loading; the cover is not duplicated as a gallery item | same: all 13 covers `object-fit: cover` with measured ratio 1 or 1672/941 and full main-column width (940 at 1440); 35 gallery blocks, 58 palette swatches; 0 broken images across desktop and mobile; 57 curated `public/work/<slug>/case-study/` assets | D |
+| SW-31 | The project-information rail is a persistent 240px desktop sidebar using native `position: sticky`, sticks at 99–124px during the narrative, releases at the end of the grid before Next Project, and falls back to natural flow below 1024px and on short desktop viewports; the contents links match only the rendered sections | same: 1440 grid 240 + 940 at 60px gap; mid-scroll rail top 99, bottom 851; released bottom ≤ grid bottom; 1024x600, 834x1194 and 390x844 all `static`; mobile information card precedes the artwork; an 8-entry anchor list matches the sections | D |
+| SW-32 | Every project palette is grounded, provenance-labelled and readable: swatches show name, HEX, role and Brand artwork / Published portfolio / Artwork-sampled status; contrast-aware ink keeps light and dark chips legible; click-to-copy uses the Clipboard API with a legacy fallback and polite live feedback; typography is only claimed where the supplied brand guide names it | same: 58 swatches across 13 projects (6/4/3 counts verified); `#241A57` copied to the clipboard with "Copied #241A57"; project link copied; white and midnight chips switch ink; only dipakkhik renders Clash Display / Waterfall Regular / Metropolis, all other projects show artwork-based identity notes instead | D |
+| SW-33 | Next Project keeps canonical order and wraps 13 → 01, with an eyebrow, canonical preview artwork, one accessible link and a restrained hover; Back to Work, metadata and the deterministic 404 remain; no automatic navigation or scroll takeover is introduced | same: right-sight → zero, … yogic-rhythm → right-sight; one `[data-project-next]` link per page with a preview image; Back to Work present; 13/13 routes 200 and `/work/not-a-project` 404; case-study intros supply the metadata description | D |
+| SW-34 | Both global themes, representative desktop/tablet/mobile viewports, reduced motion and no-JS keep the case studies complete and readable with zero horizontal overflow, no new Lenis/ScrollTrigger pin, and the frozen navbar/footer/archive behaviour intact; build, lint and the recording are clean | same: light `#FFFFFF`/`#150E34` and dark `#150E34`/`#FFFFFF` with `inherit` navbar; live toggle works without changing project swatches; 1920/1024/834/390 no overflow; 390 palette 2 columns and Next Project 1 column; reduced-motion reveals visible; no-JS 6 swatches + 5 sections + next link; `tsc`, scoped ESLint, `pnpm build` 21/21, selected-work and navbar 0 failures dev/prod; recording 14.6s, 1440×900, 15fps, 2.73MB | D |
+
+**Totals:** 58 currently verified, 10 historically passed, 56 deferred, 1 not yet
 tested, 0 failed.
 
 - 70 hero rows: 6+6+6+7+5+5+6+5+10+8+3+3.
-- 49 delivery rows: NL-01…NL-11, NLP-01…NLP-10, SW-01…SW-28 (all deferred).
+- 55 delivery rows: NL-01…NL-11, NLP-01…NLP-10, SW-01…SW-34 (all deferred).
 
 
 ## Script → case manifest
@@ -305,6 +327,8 @@ tested, 0 failed.
 | `e2e/navbar-visibility.js` | SW-24 | Desktop hide/reveal, stop stability, 8px jitter tolerance, rapid reversal, menu open/close grace, focus reveal, route change, progress synchronization, the Work surface in both themes, reduced motion, no-JS and real mobile touch swipes. |
 | `e2e/selected-work-recording.js` | SW-15, SW-17, SW-18 | 28.5s, 15fps MP4 from the showreel stage through the unchanged Zero reveal, alternating Right Sight/Sundarban perspective hovers, Splash perspective, recovery and the return to Zero. |
 | `e2e/work-archive-recording.js` | SW-21, SW-22, SW-24, SW-27, SW-28 | Short 1440x900 MP4: theme-following archive scroll through the full-width feature / staggered pair sequence, artwork hover zoom and recovery, navbar hide/reveal, and the editorial closing. |
+| `e2e/project-case-studies.js` | SW-29…SW-34 | DEL-02 shared case-study architecture, complete canonical cover framing, conditional content, 240px sticky rail and release, 58 provenance-labelled swatches, clipboard copy, Dipakkhik typography, canonical Next Project, themes, 1920/1024/834/390, reduced motion, no-JS, 404 and preserved archive/hero contracts. |
+| `e2e/case-study-recording.js` | SW-29, SW-31, SW-32, SW-33 | 14.6s, 1440×900, 15fps MP4: introduction → About/Work Scope with the sticky rail → Creative Direction → Style Guide → Crimson `#DE1B52` copy → gallery → Next Project. |
 
 Cases without a preserved script (H rows and shell cases) were verified by the
 one-off probes in the temporary directory and by the HERO-06A/06B reports; they

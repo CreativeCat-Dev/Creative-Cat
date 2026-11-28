@@ -1842,7 +1842,7 @@ async function runRoutes(browser) {
   check(firstState.detail?.title === "Right Sight", `${tag}: first title`);
   check(
     firstState.detail?.meta?.includes("Branding") &&
-      firstState.detail?.meta?.includes("01 / 13"),
+      !/\b\d+\s*\/\s*13\b/.test(firstState.detail?.meta ?? ""),
     `${tag}: first meta ${firstState.detail?.meta}`,
   );
   check(firstState.detail?.back === "Back to Work", `${tag}: back label`);
